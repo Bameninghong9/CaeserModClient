@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "caeserclient",
+  "version": "${version}",
+  "name": "Caeser Client",
+  "description": "Custom Combat Settings Client",
+  "authors": [
+    "Caeser Team"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/caeserclient/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.caeser.mod.CaeserMod"
+    ],
+    "modmenu": [
+      "com.caeser.mod.integration.CaeserModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "caeserclient.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": ">=1.21",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

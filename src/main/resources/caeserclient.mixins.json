@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.caeser.mod.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "GameMenuScreenMixin",
+    "EntityHitboxDebugRendererMixin",
+    "DebugHudProfileMixin",
+    "OverlayTextureMixin",
+    "LivingEntityRendererMixin"
+  ],
+  "client": [
+    "GameMenuScreenMixin",
+    "EntityHitboxDebugRendererMixin",
+    "DebugHudProfileMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
