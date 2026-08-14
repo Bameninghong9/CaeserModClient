@@ -8,12 +8,25 @@
     "EntityHitboxDebugRendererMixin",
     "DebugHudProfileMixin",
     "OverlayTextureMixin",
-    "LivingEntityRendererMixin"
+    "LivingEntityRendererMixin",
+    "InGameOverlayRendererMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "MouseMixin",
+    "InGameHudMixin",
+    "InGameHudAccessor",
+    "PlayerListHudMixin",
+    "ChatHudMixin",
+    "BossBarHudMixin",
+    "FogRendererMixin",
+    "LightmapTextureManagerMixin",
+    "GameRendererMixin"
   ],
   "client": [
     "GameMenuScreenMixin",
     "EntityHitboxDebugRendererMixin",
-    "DebugHudProfileMixin"
+    "DebugHudProfileMixin",
+    "ChatHudMixin",
+    "BossBarHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

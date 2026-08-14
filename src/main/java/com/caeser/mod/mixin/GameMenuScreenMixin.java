@@ -1,6 +1,6 @@
 package com.caeser.mod.mixin;
 
-import com.caeser.mod.gui.CaeserSettingsScreen;
+import com.caeser.mod.gui.CaeserMainMenuScreen;
 //? if <=1.21.11 {
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -34,11 +34,11 @@ public abstract class GameMenuScreenMixin extends Screen {
         // Add button in the top right corner or a custom position without shifting vanilla buttons
         //? if <=1.21.11 {
         this.addDrawableChild(ButtonWidget.builder(Text.literal("C"), button -> {
-            this.client.setScreen(new CaeserSettingsScreen(this));
+            this.client.setScreen(new CaeserMainMenuScreen(this));
         }).dimensions(this.width - 24, 4, 20, 20).build());
         //?} else {
         /*this.addRenderableWidget(Button.builder(Component.literal("C"), button -> {
-            this.minecraft.setScreen(new CaeserSettingsScreen(this));
+            this.minecraft.setScreen(new CaeserMainMenuScreen(this));
         }).bounds(this.width - 24, 4, 20, 20).build());
         *///?}
     }

@@ -2,6 +2,7 @@ package com.caeser.mod.gui;
 
 import com.caeser.mod.config.CaeserConfig;
 import com.caeser.mod.gui.widget.ColorPickerWidget;
+import com.caeser.mod.gui.widget.CaeserButtonWidget;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.SliderWidget;
@@ -28,6 +29,10 @@ public class HitboxCategoryScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        
+        this.addDrawableChild(new CaeserButtonWidget(this.width / 2 - 170 + 8, this.height / 2 - 50 + 8, 40, 20, Text.literal("< Back"), () -> {
+            this.client.setScreen(this.parent);
+        }));
         
         // Player Widgets
         playerBasePicker = new ColorPickerWidget(0, 0, Text.literal("Base Color"), CaeserConfig.INSTANCE.playerHitboxColor, color -> {
@@ -138,8 +143,19 @@ public class HitboxCategoryScreen extends Screen {
         // Draw main panel background
         context.fill(startX, startY, startX + panelWidth, startY + panelHeight, 0xB20A0F1D);
         
+        // Draw Outline
+        int outlineColor = 0xFF3B82F6; // Blue outline
+        context.fill(startX, startY, startX + panelWidth, startY + 1, outlineColor); // Top
+        context.fill(startX, startY + panelHeight - 1, startX + panelWidth, startY + panelHeight, outlineColor); // Bottom
+        context.fill(startX, startY, startX + 1, startY + panelHeight, outlineColor); // Left
+        context.fill(startX + panelWidth - 1, startY, startX + panelWidth, startY + panelHeight, outlineColor); // Right
+        
+        // Draw Header background and line
+        context.fill(startX + 1, startY + 1, startX + panelWidth - 1, startY + 35, 0xFF0F172A);
+        context.fill(startX, startY + 35, startX + panelWidth, startY + 36, 0xFF1E293B);
+        
         // Draw title
-        context.drawTextWithShadow(this.textRenderer, this.title, startX + (panelWidth - this.textRenderer.getWidth(this.title)) / 2, startY + 10, 0xFFFFFFFF);
+        context.drawTextWithShadow(this.textRenderer, this.title, startX + (panelWidth - this.textRenderer.getWidth(this.title)) / 2, startY + 14, 0xFFFFFFFF);
 
         // Draw "Players"
         int playerY = startY + 40;

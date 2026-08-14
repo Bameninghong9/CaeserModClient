@@ -2,6 +2,7 @@ package com.caeser.mod.gui;
 
 import com.caeser.mod.config.CaeserConfig;
 import com.caeser.mod.gui.widget.ColorPickerWidget;
+import com.caeser.mod.gui.widget.CaeserButtonWidget;
 import com.caeser.mod.util.ICustomOverlayTexture;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -30,6 +31,10 @@ public class HitColorCategoryScreen extends Screen {
         int x = this.width / 2 - 150;
         int y = 50;
 
+        this.addDrawableChild(new CaeserButtonWidget(x + 8, y - 22, 40, 20, Text.literal("< Back"), () -> {
+            this.client.setScreen(this.parent);
+        }));
+
         // "All" HitColor Picker
         allColorPicker = new ColorPickerWidget(x + 10, y + CATEGORY_HEIGHT + PADDING, Text.literal("HitColor"), CaeserConfig.INSTANCE.hitColor, color -> {
             CaeserConfig.INSTANCE.hitColor = color;
@@ -57,14 +62,29 @@ public class HitColorCategoryScreen extends Screen {
         // Draw Glass Background
         context.fill(0, 0, this.width, this.height, 0x80030712);
         
-        super.render(context, mouseX, mouseY, delta);
-
         int x = this.width / 2 - 150;
         int y = 50;
         int w = 300;
+        
+        // Draw Modal Background
+        int panelHeight = isAllExpanded ? CATEGORY_HEIGHT + 130 : CATEGORY_HEIGHT;
+        context.fill(x, y - 30, x + w, y + panelHeight, 0xB20A0F1D);
+        
+        // Draw Outline
+        int outlineColor = 0xFF3B82F6; // Blue outline
+        context.fill(x, y - 30, x + w, y - 29, outlineColor); // Top
+        context.fill(x, y + panelHeight - 1, x + w, y + panelHeight, outlineColor); // Bottom
+        context.fill(x, y - 30, x + 1, y + panelHeight, outlineColor); // Left
+        context.fill(x + w - 1, y - 30, x + w, y + panelHeight, outlineColor); // Right
+        
+        // Draw Header background and line
+        context.fill(x + 1, y - 29, x + w - 1, y - 1, 0xFF0F172A);
+        context.fill(x, y - 1, x + w, y, 0xFF1E293B);
+        
+        super.render(context, mouseX, mouseY, delta);
 
         // Draw Title
-        context.drawTextWithShadow(this.textRenderer, this.title, this.width / 2 - this.textRenderer.getWidth(this.title) / 2, 20, 0xFFFFFFFF);
+        context.drawTextWithShadow(this.textRenderer, this.title, this.width / 2 - this.textRenderer.getWidth(this.title) / 2, y - 20, 0xFFFFFFFF);
 
         // Draw "All" Category Header
         boolean allHover = mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + CATEGORY_HEIGHT;
