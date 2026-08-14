@@ -94,7 +94,7 @@ public class CaeserSettingsScreen extends Screen {
                     () -> MinecraftClient.getInstance().setScreen(new HitColorCategoryScreen(this))));
                 itemsAdded++;
             }
-            
+
             if ("combo counter".contains(searchQuery)) {
                 if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 52; }
                 addWidget.accept(createToggle(currentX, currentY, columnWidth, "Combo Counter", "Display your current hit combo", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/combo.png"),
@@ -103,7 +103,8 @@ public class CaeserSettingsScreen extends Screen {
                     createBgMenu("Combo Counter", com.caeser.mod.gui.hud.ComboModule.class,
                         () -> CaeserConfig.INSTANCE.comboBgType, val -> CaeserConfig.INSTANCE.comboBgType = val,
                         () -> CaeserConfig.INSTANCE.comboBgColor, val -> CaeserConfig.INSTANCE.comboBgColor = val,
-                        () -> CaeserConfig.INSTANCE.comboOutlineColor, val -> CaeserConfig.INSTANCE.comboOutlineColor = val)));
+                        () -> CaeserConfig.INSTANCE.comboOutlineColor, val -> CaeserConfig.INSTANCE.comboOutlineColor = val,
+                        () -> CaeserConfig.INSTANCE.comboBgCornerRadius, val -> CaeserConfig.INSTANCE.comboBgCornerRadius = val)));
                 itemsAdded++;
             }
 
@@ -115,7 +116,8 @@ public class CaeserSettingsScreen extends Screen {
                     createBgMenu("Reach Display", com.caeser.mod.gui.hud.ReachModule.class,
                         () -> CaeserConfig.INSTANCE.reachBgType, val -> CaeserConfig.INSTANCE.reachBgType = val,
                         () -> CaeserConfig.INSTANCE.reachBgColor, val -> CaeserConfig.INSTANCE.reachBgColor = val,
-                        () -> CaeserConfig.INSTANCE.reachOutlineColor, val -> CaeserConfig.INSTANCE.reachOutlineColor = val)));
+                        () -> CaeserConfig.INSTANCE.reachOutlineColor, val -> CaeserConfig.INSTANCE.reachOutlineColor = val,
+                        () -> CaeserConfig.INSTANCE.reachBgCornerRadius, val -> CaeserConfig.INSTANCE.reachBgCornerRadius = val)));
                 itemsAdded++;
             }
 
@@ -127,7 +129,8 @@ public class CaeserSettingsScreen extends Screen {
                     createBgMenu("CPS Display", com.caeser.mod.gui.hud.CpsModule.class,
                         () -> CaeserConfig.INSTANCE.cpsBgType, val -> CaeserConfig.INSTANCE.cpsBgType = val,
                         () -> CaeserConfig.INSTANCE.cpsBgColor, val -> CaeserConfig.INSTANCE.cpsBgColor = val,
-                        () -> CaeserConfig.INSTANCE.cpsOutlineColor, val -> CaeserConfig.INSTANCE.cpsOutlineColor = val)));
+                        () -> CaeserConfig.INSTANCE.cpsOutlineColor, val -> CaeserConfig.INSTANCE.cpsOutlineColor = val,
+                        () -> CaeserConfig.INSTANCE.cpsBgCornerRadius, val -> CaeserConfig.INSTANCE.cpsBgCornerRadius = val)));
                 itemsAdded++;
             }
 
@@ -139,7 +142,8 @@ public class CaeserSettingsScreen extends Screen {
                     createBgMenu("Target HUD", com.caeser.mod.gui.hud.TargetHudModule.class,
                         () -> CaeserConfig.INSTANCE.targetHudBgType, val -> CaeserConfig.INSTANCE.targetHudBgType = val,
                         () -> CaeserConfig.INSTANCE.targetHudBgColor, val -> CaeserConfig.INSTANCE.targetHudBgColor = val,
-                        () -> CaeserConfig.INSTANCE.targetHudOutlineColor, val -> CaeserConfig.INSTANCE.targetHudOutlineColor = val)));
+                        () -> CaeserConfig.INSTANCE.targetHudOutlineColor, val -> CaeserConfig.INSTANCE.targetHudOutlineColor = val,
+                        () -> CaeserConfig.INSTANCE.targetHudBgCornerRadius, val -> CaeserConfig.INSTANCE.targetHudBgCornerRadius = val)));
                 itemsAdded++;
             }
 
@@ -155,6 +159,33 @@ public class CaeserSettingsScreen extends Screen {
 
         // GAMEPLAY
         if (showAll || showGameplay) {
+            if ("time changer".contains(searchQuery)) {
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 52; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Time Changer", "Freeze time client-side", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/uptime.png"),
+                    () -> CaeserConfig.INSTANCE.timeChanger, 
+                    val -> { CaeserConfig.INSTANCE.timeChanger = val; CaeserConfig.save(); }, 
+                    () -> MinecraftClient.getInstance().setScreen(new TimeCategoryScreen(this))));
+                itemsAdded++;
+            }
+
+            if ("keystrokes".contains(searchQuery)) {
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 52; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Keystrokes", "Show pressed keys on screen", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/cps.png"),
+                    () -> CaeserConfig.INSTANCE.keystrokes, 
+                    val -> { CaeserConfig.INSTANCE.keystrokes = val; CaeserConfig.save(); }, 
+                    () -> com.caeser.mod.gui.hud.HudManager.INSTANCE.getModule(com.caeser.mod.gui.hud.KeystrokesModule.class).openSettingsMenu(MinecraftClient.getInstance())));
+                itemsAdded++;
+            }
+
+            if ("custom crosshair".contains(searchQuery)) {
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 52; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Custom Crosshair", "Customize your crosshair", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/targethud.png"),
+                    () -> CaeserConfig.INSTANCE.customCrosshair, 
+                    val -> { CaeserConfig.INSTANCE.customCrosshair = val; CaeserConfig.save(); }, 
+                    () -> MinecraftClient.getInstance().setScreen(new CrosshairEditorScreen(this))));
+                itemsAdded++;
+            }
+
             if ("bossbar".contains(searchQuery)) {
                 if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 52; }
                 addWidget.accept(createToggle(currentX, currentY, columnWidth, "Bossbar", "Customize the boss health bar", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/bossbar.png"),
@@ -171,7 +202,8 @@ public class CaeserSettingsScreen extends Screen {
                     createBgMenu("Scoreboard", com.caeser.mod.gui.hud.ScoreboardModule.class,
                         () -> CaeserConfig.INSTANCE.scoreboardBgType, val -> CaeserConfig.INSTANCE.scoreboardBgType = val,
                         () -> CaeserConfig.INSTANCE.scoreboardBgColor, val -> CaeserConfig.INSTANCE.scoreboardBgColor = val,
-                        () -> CaeserConfig.INSTANCE.scoreboardOutlineColor, val -> CaeserConfig.INSTANCE.scoreboardOutlineColor = val)));
+                        () -> CaeserConfig.INSTANCE.scoreboardOutlineColor, val -> CaeserConfig.INSTANCE.scoreboardOutlineColor = val,
+                        () -> CaeserConfig.INSTANCE.scoreboardBgCornerRadius, val -> CaeserConfig.INSTANCE.scoreboardBgCornerRadius = val)));
                 itemsAdded++;
             }
             
@@ -183,7 +215,8 @@ public class CaeserSettingsScreen extends Screen {
                     createBgMenu("FPS Display", com.caeser.mod.gui.hud.FpsModule.class,
                         () -> CaeserConfig.INSTANCE.fpsBgType, val -> CaeserConfig.INSTANCE.fpsBgType = val,
                         () -> CaeserConfig.INSTANCE.fpsBgColor, val -> CaeserConfig.INSTANCE.fpsBgColor = val,
-                        () -> CaeserConfig.INSTANCE.fpsOutlineColor, val -> CaeserConfig.INSTANCE.fpsOutlineColor = val)));
+                        () -> CaeserConfig.INSTANCE.fpsOutlineColor, val -> CaeserConfig.INSTANCE.fpsOutlineColor = val,
+                        () -> CaeserConfig.INSTANCE.fpsBgCornerRadius, val -> CaeserConfig.INSTANCE.fpsBgCornerRadius = val)));
                 itemsAdded++;
             }
 
@@ -270,8 +303,9 @@ public class CaeserSettingsScreen extends Screen {
 
     private Runnable createBgMenu(String name, Class<? extends com.caeser.mod.gui.hud.IHudModule> moduleClass, java.util.function.Supplier<HudBackgroundType> bgTypeGetter, java.util.function.Consumer<HudBackgroundType> bgTypeSetter,
                                   java.util.function.Supplier<Integer> bgColorGetter, java.util.function.Consumer<Integer> bgColorSetter,
-                                  java.util.function.Supplier<Integer> outlineColorGetter, java.util.function.Consumer<Integer> outlineColorSetter) {
-        return () -> MinecraftClient.getInstance().setScreen(new HudBackgroundCategoryScreen(this, Text.literal(name), com.caeser.mod.gui.hud.HudManager.INSTANCE.getModule(moduleClass), bgTypeGetter, bgTypeSetter, bgColorGetter, bgColorSetter, outlineColorGetter, outlineColorSetter));
+                                  java.util.function.Supplier<Integer> outlineColorGetter, java.util.function.Consumer<Integer> outlineColorSetter,
+                                  java.util.function.Supplier<Float> cornerRadiusGetter, java.util.function.Consumer<Float> cornerRadiusSetter) {
+        return () -> MinecraftClient.getInstance().setScreen(new HudBackgroundCategoryScreen(this, Text.literal(name), com.caeser.mod.gui.hud.HudManager.INSTANCE.getModule(moduleClass), bgTypeGetter, bgTypeSetter, bgColorGetter, bgColorSetter, outlineColorGetter, outlineColorSetter, cornerRadiusGetter, cornerRadiusSetter));
     }
 
     @Override
@@ -355,10 +389,10 @@ public class CaeserSettingsScreen extends Screen {
         this.searchField.render(context, mouseX, mouseY, delta);
     }
 
-    @Override
     public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
         double mouseX = click.x();
         double mouseY = click.y();
+        int button = click.button();
         int panelWidth = 520;
         int panelHeight = 330;
         int startX = (this.width - panelWidth) / 2;

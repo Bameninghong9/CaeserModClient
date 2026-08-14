@@ -85,7 +85,7 @@ public class ComboModule implements IHudModule {
         context.getMatrices().scale(getScale(), getScale());
         
         IHudModule.drawBackground(context, this, getWidth(), getHeight(),
-            CaeserConfig.INSTANCE.comboBgType, CaeserConfig.INSTANCE.comboBgColor, CaeserConfig.INSTANCE.comboOutlineColor);
+            CaeserConfig.INSTANCE.comboBgType, CaeserConfig.INSTANCE.comboBgColor, CaeserConfig.INSTANCE.comboOutlineColor, CaeserConfig.INSTANCE.comboBgCornerRadius);
             
         context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, text, 4, 3, 0xFFFFFFFF);
         

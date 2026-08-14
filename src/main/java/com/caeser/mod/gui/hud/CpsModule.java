@@ -91,7 +91,7 @@ public class CpsModule implements IHudModule {
         context.getMatrices().scale(getScale(), getScale());
         
         IHudModule.drawBackground(context, this, getWidth(), getHeight(),
-            CaeserConfig.INSTANCE.cpsBgType, CaeserConfig.INSTANCE.cpsBgColor, CaeserConfig.INSTANCE.cpsOutlineColor);
+            CaeserConfig.INSTANCE.cpsBgType, CaeserConfig.INSTANCE.cpsBgColor, CaeserConfig.INSTANCE.cpsOutlineColor, CaeserConfig.INSTANCE.cpsBgCornerRadius);
             
         context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, text, 4, 3, 0xFFFFFFFF);
         

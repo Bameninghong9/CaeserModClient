@@ -171,12 +171,10 @@ public class AutoTextScreen extends CaeserModalScreen {
         }
     }
 
-    @Override
     public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
         double mouseX = click.x();
         double mouseY = click.y();
-        if (super.mouseClicked(click, bl)) return true;
-        
+        int button = click.button();
         for (AccordionEntry entry : entries) {
             boolean expanded = (entry.isNew && expandedIndex == -2) || (!entry.isNew && expandedIndex == entry.index);
             
@@ -241,7 +239,6 @@ public class AutoTextScreen extends CaeserModalScreen {
 
     private boolean consumeNextChar = false;
 
-    @Override
     public boolean keyPressed(net.minecraft.client.input.KeyInput input) {
         int keyCode = input.key();
         if (this.listeningForKey) {
@@ -265,7 +262,6 @@ public class AutoTextScreen extends CaeserModalScreen {
         return false;
     }
     
-    @Override
     public boolean charTyped(net.minecraft.client.input.CharInput input) {
         if (this.listeningForKey) return true;
         if (this.consumeNextChar) {

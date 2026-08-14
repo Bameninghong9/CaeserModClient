@@ -77,9 +77,8 @@ public class FpsModule implements IHudModule {
         context.getMatrices().scale(getScale(), getScale());
         
         // Background will be drawn via HudManager looping through IHudModule or here
-        // We will implement drawBackground in IHudModule soon
         IHudModule.drawBackground(context, this, getWidth(), getHeight(), 
-            CaeserConfig.INSTANCE.fpsBgType, CaeserConfig.INSTANCE.fpsBgColor, CaeserConfig.INSTANCE.fpsOutlineColor);
+            CaeserConfig.INSTANCE.fpsBgType, CaeserConfig.INSTANCE.fpsBgColor, CaeserConfig.INSTANCE.fpsOutlineColor, CaeserConfig.INSTANCE.fpsBgCornerRadius);
             
         context.drawTextWithShadow(textRenderer, getFpsString(), 0, 0, 0xFFFFFFFF);
         
@@ -92,7 +91,8 @@ public class FpsModule implements IHudModule {
             net.minecraft.text.Text.literal("FPS Display"), this,
             () -> CaeserConfig.INSTANCE.fpsBgType, val -> CaeserConfig.INSTANCE.fpsBgType = val,
             () -> CaeserConfig.INSTANCE.fpsBgColor, val -> CaeserConfig.INSTANCE.fpsBgColor = val,
-            () -> CaeserConfig.INSTANCE.fpsOutlineColor, val -> CaeserConfig.INSTANCE.fpsOutlineColor = val
+            () -> CaeserConfig.INSTANCE.fpsOutlineColor, val -> CaeserConfig.INSTANCE.fpsOutlineColor = val,
+            () -> CaeserConfig.INSTANCE.fpsBgCornerRadius, val -> CaeserConfig.INSTANCE.fpsBgCornerRadius = val
         ));
     }
 

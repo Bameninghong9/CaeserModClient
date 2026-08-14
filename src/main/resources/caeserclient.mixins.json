@@ -19,7 +19,8 @@
     "BossBarHudMixin",
     "FogRendererMixin",
     "LightmapTextureManagerMixin",
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "ClientWorldMixin"
   ],
   "client": [
     "GameMenuScreenMixin",

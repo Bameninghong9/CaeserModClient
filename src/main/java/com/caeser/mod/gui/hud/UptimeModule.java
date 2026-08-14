@@ -84,7 +84,7 @@ public class UptimeModule implements IHudModule {
         context.getMatrices().scale(getScale(), getScale());
         
         IHudModule.drawBackground(context, this, getWidth(), getHeight(),
-            CaeserConfig.INSTANCE.uptimeBgType, CaeserConfig.INSTANCE.uptimeBgColor, CaeserConfig.INSTANCE.uptimeOutlineColor);
+            CaeserConfig.INSTANCE.uptimeBgType, CaeserConfig.INSTANCE.uptimeBgColor, CaeserConfig.INSTANCE.uptimeOutlineColor, CaeserConfig.INSTANCE.uptimeBgCornerRadius);
             
         context.drawTextWithShadow(textRenderer, getUptimeString(), 0, 0, 0xFFFFFFFF);
         

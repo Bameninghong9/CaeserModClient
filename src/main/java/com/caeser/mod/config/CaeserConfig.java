@@ -14,18 +14,6 @@ public class CaeserConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "caeserclient.json");
 
-    // Hitbox settings
-    public boolean hitboxes = false;
-    
-    // Player Hitboxes
-    public float playerHitboxThickness = 2.0f;
-    public int playerHitboxColor = 0xFFFFFFFF; // White
-    public int playerHitboxHoverColor = 0xFFFF0000; // Red
-    
-    // Mob Hitboxes
-    public float mobHitboxThickness = 2.0f;
-    public int mobHitboxColor = 0xFFFFFFFF; // White
-    public int mobHitboxHoverColor = 0xFFFF0000; // Red
     
     // HitColor Settings
     public boolean hitColors = false;
@@ -45,24 +33,28 @@ public class CaeserConfig {
     public HudBackgroundType cpsBgType = HudBackgroundType.TRANSPARENT;
     public int cpsBgColor = 0x80000000;
     public int cpsOutlineColor = 0xFF000000;
+    public float cpsBgCornerRadius = 0.0f;
 
     public int comboX = 10, comboY = 25;
     public float comboScale = 1.0f;
     public HudBackgroundType comboBgType = HudBackgroundType.TRANSPARENT;
     public int comboBgColor = 0x80000000;
     public int comboOutlineColor = 0xFF000000;
+    public float comboBgCornerRadius = 0.0f;
 
     public int reachX = 10, reachY = 40;
     public float reachScale = 1.0f;
     public HudBackgroundType reachBgType = HudBackgroundType.TRANSPARENT;
     public int reachBgColor = 0x80000000;
     public int reachOutlineColor = 0xFF000000;
+    public float reachBgCornerRadius = 0.0f;
 
     public int targetHudX = 200, targetHudY = 100;
     public float targetHudScale = 1.0f;
     public HudBackgroundType targetHudBgType = HudBackgroundType.TRANSPARENT;
     public int targetHudBgColor = 0x80000000;
     public int targetHudOutlineColor = 0xFF000000;
+    public float targetHudBgCornerRadius = 0.0f;
     
     // Vanilla HUD elements
     public boolean customBossbar = true;
@@ -71,6 +63,7 @@ public class CaeserConfig {
     public HudBackgroundType bossbarBgType = HudBackgroundType.TRANSPARENT;
     public int bossbarBgColor = 0x80000000;
     public int bossbarOutlineColor = 0xFF000000;
+    public float bossbarBgCornerRadius = 0.0f;
     
     public boolean customScoreboard = true;
     public int scoreboardX = -1, scoreboardY = -1;
@@ -78,6 +71,7 @@ public class CaeserConfig {
     public HudBackgroundType scoreboardBgType = HudBackgroundType.TRANSPARENT;
     public int scoreboardBgColor = 0x80000000;
     public int scoreboardOutlineColor = 0xFF000000;
+    public float scoreboardBgCornerRadius = 0.0f;
 
     // Uptime Module
     public boolean uptime = false;
@@ -88,6 +82,7 @@ public class CaeserConfig {
     public HudBackgroundType uptimeBgType = HudBackgroundType.TRANSPARENT;
     public int uptimeBgColor = 0x80000000;
     public int uptimeOutlineColor = 0xFF000000;
+    public float uptimeBgCornerRadius = 0.0f;
 
     // Coordinates Module
     public boolean coordinates = false;
@@ -101,6 +96,7 @@ public class CaeserConfig {
     public HudBackgroundType coordsBgType = HudBackgroundType.TRANSPARENT;
     public int coordsBgColor = 0x80000000;
     public int coordsOutlineColor = 0xFF000000;
+    public float coordsBgCornerRadius = 0.0f;
 
     // FPS Module
     public boolean fps = false;
@@ -109,6 +105,7 @@ public class CaeserConfig {
     public HudBackgroundType fpsBgType = HudBackgroundType.TRANSPARENT;
     public int fpsBgColor = 0x80000000;
     public int fpsOutlineColor = 0xFF000000;
+    public float fpsBgCornerRadius = 0.0f;
 
     // Gameplay Settings
     public boolean noFog = false;
@@ -120,6 +117,36 @@ public class CaeserConfig {
 
     public boolean fullbright = false;
 
+    // Hitboxes
+    public boolean hitboxes = false;
+    public float hitboxThickness = 2.0f;
+    public int hitboxColorMonster = 0xFFFF0000;
+    public int hitboxColorAnimal = 0xFF00FF00;
+    public int hitboxColorPlayer = 0xFFFFFFFF;
+    public int hitboxColorOther = 0xFFFFFFFF;
+    public boolean hitboxLookVector = true;
+
+    // Keystrokes
+    public boolean keystrokes = false;
+    public int keystrokesX = 10, keystrokesY = 100;
+    public float keystrokesScale = 1.0f;
+    public HudBackgroundType keystrokesBgType = HudBackgroundType.TRANSPARENT;
+    public int keystrokesBgColor = 0x80000000;
+    public int keystrokesOutlineColor = 0xFF000000;
+    public float keystrokesBgCornerRadius = 0.0f;
+
+    // Time Changer
+    public boolean timeChanger = false;
+    public int customTime = 6000; // 0-24000
+
+    // Custom Crosshair
+    public boolean customCrosshair = false;
+    public boolean customCrosshairVanilla = true; // If true, uses vanilla crosshair but changes color
+    public int customCrosshairVanillaColor = 0xFFFFFFFF;
+    public boolean customCrosshairTargetColor = false;
+    public int customCrosshairTargetColorHex = 0xFFFF0000;
+    public int[][] customCrosshairPixels = new int[16][16]; // The drawn pixels
+    
     // Chat Settings
     public boolean chatHeads = false;
     public boolean chatHeadsBeforeName = true;

@@ -81,7 +81,7 @@ public class ReachModule implements IHudModule {
         context.getMatrices().scale(getScale(), getScale());
         
         IHudModule.drawBackground(context, this, getWidth(), getHeight(),
-            CaeserConfig.INSTANCE.reachBgType, CaeserConfig.INSTANCE.reachBgColor, CaeserConfig.INSTANCE.reachOutlineColor);
+            CaeserConfig.INSTANCE.reachBgType, CaeserConfig.INSTANCE.reachBgColor, CaeserConfig.INSTANCE.reachOutlineColor, CaeserConfig.INSTANCE.reachBgCornerRadius);
             
         context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, text, 4, 3, 0xFFFFFFFF);
         

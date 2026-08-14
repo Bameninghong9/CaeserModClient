@@ -11,7 +11,8 @@ public class UptimeCategoryScreen extends HudBackgroundCategoryScreen {
         super(parent, Text.literal("Uptime"), module,
             () -> CaeserConfig.INSTANCE.uptimeBgType, val -> CaeserConfig.INSTANCE.uptimeBgType = val,
             () -> CaeserConfig.INSTANCE.uptimeBgColor, val -> CaeserConfig.INSTANCE.uptimeBgColor = val,
-            () -> CaeserConfig.INSTANCE.uptimeOutlineColor, val -> CaeserConfig.INSTANCE.uptimeOutlineColor = val);
+            () -> CaeserConfig.INSTANCE.uptimeOutlineColor, val -> CaeserConfig.INSTANCE.uptimeOutlineColor = val,
+            () -> CaeserConfig.INSTANCE.uptimeBgCornerRadius, val -> CaeserConfig.INSTANCE.uptimeBgCornerRadius = val);
     }
 
     @Override

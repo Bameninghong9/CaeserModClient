@@ -10,12 +10,57 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
     @Inject(method = "render", at = @At("TAIL"))
     private void onRender(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         HudManager.INSTANCE.render(context, tickCounter.getTickProgress(true));
+    }
+    @Inject(method = "renderCrosshair", at = @At("HEAD"), cancellable = true)
+    private void onRenderCrosshair(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+        if (!com.caeser.mod.config.CaeserConfig.INSTANCE.customCrosshair) return;
+        
+        net.minecraft.client.MinecraftClient client = net.minecraft.client.MinecraftClient.getInstance();
+        int scaledWidth = context.getScaledWindowWidth();
+        int scaledHeight = context.getScaledWindowHeight();
+        int centerX = scaledWidth / 2;
+        int centerY = scaledHeight / 2;
+        
+        boolean isTargeting = false;
+        if (com.caeser.mod.config.CaeserConfig.INSTANCE.customCrosshairTargetColor && client.targetedEntity instanceof net.minecraft.entity.LivingEntity) {
+            isTargeting = true;
+        }
+
+        if (com.caeser.mod.config.CaeserConfig.INSTANCE.customCrosshairVanilla) {
+            // A simple colored plus for "Vanilla style"
+            int color = isTargeting ? com.caeser.mod.config.CaeserConfig.INSTANCE.customCrosshairTargetColorHex : com.caeser.mod.config.CaeserConfig.INSTANCE.customCrosshairVanillaColor;
+            context.fill(centerX - 4, centerY - 1, centerX + 5, centerY, color);
+            context.fill(centerX - 1, centerY - 4, centerX, centerY + 5, color);
+            ci.cancel();
+            return;
+        }
+
+        // Draw 15x15 grid custom crosshair
+        int[][] pixels = com.caeser.mod.config.CaeserConfig.INSTANCE.customCrosshairPixels;
+        int startX = centerX - 7;
+        int startY = centerY - 7;
+        
+        int targetColor = com.caeser.mod.config.CaeserConfig.INSTANCE.customCrosshairTargetColorHex;
+
+        for (int x = 0; x < 15; x++) {
+            for (int y = 0; y < 15; y++) {
+                int color = pixels[x][y];
+                if (color != 0) { // If not transparent
+                    if (isTargeting) {
+                        color = targetColor;
+                    }
+                    context.fill(startX + x, startY + y, startX + x + 1, startY + y + 1, color);
+                }
+            }
+        }
+        ci.cancel();
     }
 
     @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", at = @At("HEAD"))
@@ -67,7 +112,8 @@ public class InGameHudMixin {
                 com.caeser.mod.gui.hud.IHudModule.drawBackground(context, sm, bw, bh,
                     com.caeser.mod.config.CaeserConfig.INSTANCE.scoreboardBgType,
                     com.caeser.mod.config.CaeserConfig.INSTANCE.scoreboardBgColor,
-                    com.caeser.mod.config.CaeserConfig.INSTANCE.scoreboardOutlineColor);
+                    com.caeser.mod.config.CaeserConfig.INSTANCE.scoreboardOutlineColor,
+                    com.caeser.mod.config.CaeserConfig.INSTANCE.scoreboardBgCornerRadius);
             }
             
             // Re-center so vanilla text renders exactly over our background

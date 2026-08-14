@@ -16,7 +16,7 @@ public class LowFireCategoryScreen extends CaeserModalScreen {
     protected void initModal() {
         int x = this.startX + 60;
         int y = this.height / 2 - 50;
-
+        
         // Add a slider for low fire height
         this.addDrawableChild(new CaeserSliderWidget(
             x, y, 300, 20, 
@@ -29,5 +29,4 @@ public class LowFireCategoryScreen extends CaeserModalScreen {
             }
         ));
     }
-
-    }
+}

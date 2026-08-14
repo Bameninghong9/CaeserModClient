@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 
 public abstract class CaeserModalScreen extends Screen {
     protected final Screen parent;
-    protected int panelWidth = 320;
-    protected int panelHeight = 220;
+    protected int panelWidth = 400;
+    protected int panelHeight = 280;
     protected int startX;
     protected int startY;
     
@@ -50,6 +50,8 @@ public abstract class CaeserModalScreen extends Screen {
     
     protected abstract void initModal();
 
+    public net.minecraft.client.gui.widget.ClickableWidget activePopup = null;
+
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         // Render modal background (Deep Slate with some alpha)
@@ -74,8 +76,68 @@ public abstract class CaeserModalScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
         
         renderModalForeground(context, mouseX, mouseY, delta);
+        
+        if (activePopup != null) {
+            // Draw a slight dark overlay over the whole screen
+            context.fill(0, 0, this.width, this.height, 0x66000000);
+            activePopup.render(context, mouseX, mouseY, delta);
+        }
     }
     
+    public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (activePopup != null) {
+            if (activePopup.isMouseOver(mouseX, mouseY)) {
+                return activePopup.mouseClicked(click, bl);
+            } else {
+                activePopup = null; // Close popup if clicked outside
+                return true;
+            }
+        }
+        return super.mouseClicked(click, bl);
+    }
+    
+    public boolean mouseDragged(net.minecraft.client.gui.Click click, double deltaX, double deltaY) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (activePopup != null) {
+            return activePopup.mouseDragged(click, deltaX, deltaY);
+        }
+        return super.mouseDragged(click, deltaX, deltaY);
+    }
+    
+    public boolean mouseReleased(net.minecraft.client.gui.Click click) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (activePopup != null) {
+            return activePopup.mouseReleased(click);
+        }
+        return super.mouseReleased(click);
+    }
+    
+    public boolean charTyped(net.minecraft.client.input.CharInput input) {
+        char chr = (char) input.codepoint();
+        int modifiers = input.modifiers();
+        if (activePopup != null) {
+            return activePopup.charTyped(input);
+        }
+        return super.charTyped(input);
+    }
+    
+    public boolean keyPressed(net.minecraft.client.input.KeyInput input) {
+        int keyCode = input.key();
+        int scanCode = input.scancode();
+        int modifiers = input.modifiers();
+        if (activePopup != null) {
+            return activePopup.keyPressed(input);
+        }
+        return super.keyPressed(input);
+    }
+
     protected void renderModalBackground(DrawContext context, int mouseX, int mouseY, float delta) {}
     protected void renderModalForeground(DrawContext context, int mouseX, int mouseY, float delta) {}
 

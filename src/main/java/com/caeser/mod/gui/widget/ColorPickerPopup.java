@@ -1,6 +1,5 @@
 package com.caeser.mod.gui.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -12,14 +11,13 @@ import net.minecraft.text.Text;
 import java.awt.Color;
 import java.util.function.Consumer;
 
-public class ColorPickerWidget extends ClickableWidget {
+public class ColorPickerPopup extends ClickableWidget {
     private float hue = 0.0f;
     private float saturation = 1.0f;
     private float brightness = 1.0f;
     private float alpha = 1.0f;
 
     private final Consumer<Integer> onColorChange;
-    
     private final TextFieldWidget hexField;
 
     private boolean draggingSV = false;
@@ -32,30 +30,30 @@ public class ColorPickerWidget extends ClickableWidget {
     private final int svHeight = 40;
     private final int sliderHeight = 10;
     private final int padding = 4;
+    private final int borderPadding = 8;
+    
+    // Popup total dimensions: width 160, height 120
+    private final int popupWidth = previewSize + padding + svWidth + borderPadding * 2;
+    private final int popupHeight = 20 + svHeight + sliderHeight * 2 + 20 + padding * 3 + borderPadding * 2;
 
-    public ColorPickerWidget(int x, int y, Text message, int initialColor, Consumer<Integer> onColorChange) {
-        super(x, y, 40 + 4 + 100, 104, message);
-        this.onColorChange = onColorChange;
+    public ColorPickerPopup(int screenWidth, int screenHeight, int initialColor, Consumer<Integer> onColorChange) {
+        super(0, 0, 160, 130, Text.literal("COLOR PICKER"));
         
+        // Center the popup
+        this.setX((screenWidth - popupWidth) / 2);
+        this.setY((screenHeight - popupHeight) / 2);
+        this.width = popupWidth;
+        this.height = popupHeight;
+        
+        this.onColorChange = onColorChange;
         setColor(initialColor);
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        this.hexField = new TextFieldWidget(textRenderer, x, y + svHeight + sliderHeight * 2 + padding * 3, this.width, 20, Text.literal("Hex"));
+        int hexY = this.getY() + borderPadding + 20 + svHeight + sliderHeight * 2 + padding * 3;
+        this.hexField = new TextFieldWidget(textRenderer, this.getX() + borderPadding, hexY, popupWidth - borderPadding * 2, 20, Text.literal("Hex"));
         this.hexField.setMaxLength(9); // #AARRGGBB
         this.hexField.setChangedListener(this::onHexChanged);
         updateHexField();
-    }
-
-    @Override
-    public void setX(int x) {
-        super.setX(x);
-        if (this.hexField != null) this.hexField.setX(x);
-    }
-
-    @Override
-    public void setY(int y) {
-        super.setY(y);
-        if (this.hexField != null) this.hexField.setY(y + svHeight + sliderHeight * 2 + padding * 3);
     }
 
     private void setColor(int color) {
@@ -84,7 +82,7 @@ public class ColorPickerWidget extends ClickableWidget {
             try {
                 long c = Long.parseLong(text.substring(1), 16);
                 if (text.length() == 7) {
-                    c |= 0xFF000000L; // default full alpha if AARRGGBB not provided
+                    c |= 0xFF000000L; // default full alpha
                 }
                 setColor((int)c);
                 if (onColorChange != null) {
@@ -96,17 +94,29 @@ public class ColorPickerWidget extends ClickableWidget {
 
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        // Draw title
-        context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, this.getMessage(), this.getX(), this.getY() - 12, 0xFFFFFFFF);
-
-        int currentY = this.getY();
+        // Draw popup background
+        context.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0xFF1E293B);
         
-        // Draw Preview Box Outline & Fill
-        context.fill(this.getX() - 1, currentY - 1, this.getX() + previewSize + 1, currentY + previewSize + 1, 0xFFFFFFFF);
-        context.fill(this.getX(), currentY, this.getX() + previewSize, currentY + previewSize, getColor());
+        // Draw outline
+        int outlineColor = 0xFF6366F1;
+        context.fill(this.getX() - 1, this.getY() - 1, this.getX() + this.width + 1, this.getY(), outlineColor);
+        context.fill(this.getX() - 1, this.getY() + this.height, this.getX() + this.width + 1, this.getY() + this.height + 1, outlineColor);
+        context.fill(this.getX() - 1, this.getY(), this.getX(), this.getY() + this.height, outlineColor);
+        context.fill(this.getX() + this.width, this.getY(), this.getX() + this.width + 1, this.getY() + this.height, outlineColor);
+
+        // Draw title
+        context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, this.getMessage(), this.getX() + borderPadding, this.getY() + borderPadding, 0xFFFFFFFF);
+
+        int currentY = this.getY() + borderPadding + 20; // 20px for title
+        int currentX = this.getX() + borderPadding;
+
+        // Draw Preview Box
+        context.fill(currentX - 1, currentY - 1, currentX + previewSize + 1, currentY + previewSize + 1, 0xFFFFFFFF);
+        context.fill(currentX, currentY, currentX + previewSize, currentY + previewSize, 0xFF000000); // base for alpha
+        context.fill(currentX, currentY, currentX + previewSize, currentY + previewSize, getColor());
         
         // Draw SV Box
-        int svX = this.getX() + previewSize + padding;
+        int svX = currentX + previewSize + padding;
         context.fill(svX - 1, currentY - 1, svX + svWidth + 1, currentY + svHeight + 1, 0xFFFFFFFF);
         drawSVBox(context, svX, currentY, svWidth, svHeight);
 
@@ -123,29 +133,30 @@ public class ColorPickerWidget extends ClickableWidget {
         currentY += svHeight + padding;
 
         // Draw Hue Slider
-        context.fill(svX - 1, currentY - 1, svX + svWidth + 1, currentY + sliderHeight + 1, 0xFFFFFFFF);
-        drawHueSlider(context, svX, currentY, svWidth, sliderHeight);
+        context.fill(currentX - 1, currentY - 1, currentX + popupWidth - borderPadding * 2 + 1, currentY + sliderHeight + 1, 0xFFFFFFFF);
+        drawHueSlider(context, currentX, currentY, popupWidth - borderPadding * 2, sliderHeight);
         
         // Draw Hue Cursor
-        int hueCursorX = svX + (int)(hue * svWidth);
+        int sliderFullWidth = popupWidth - borderPadding * 2;
+        int hueCursorX = currentX + (int)(hue * sliderFullWidth);
         
-        context.fill(hueCursorX - 2, currentY - 1, hueCursorX + 2, currentY, 0xFFFFFFFF); // Top
-        context.fill(hueCursorX - 2, currentY + sliderHeight, hueCursorX + 2, currentY + sliderHeight + 1, 0xFFFFFFFF); // Bottom
-        context.fill(hueCursorX - 2, currentY, hueCursorX - 1, currentY + sliderHeight, 0xFFFFFFFF); // Left
-        context.fill(hueCursorX + 1, currentY, hueCursorX + 2, currentY + sliderHeight, 0xFFFFFFFF); // Right
+        context.fill(hueCursorX - 2, currentY - 1, hueCursorX + 2, currentY, 0xFFFFFFFF); 
+        context.fill(hueCursorX - 2, currentY + sliderHeight, hueCursorX + 2, currentY + sliderHeight + 1, 0xFFFFFFFF);
+        context.fill(hueCursorX - 2, currentY, hueCursorX - 1, currentY + sliderHeight, 0xFFFFFFFF);
+        context.fill(hueCursorX + 1, currentY, hueCursorX + 2, currentY + sliderHeight, 0xFFFFFFFF);
 
         currentY += sliderHeight + padding;
 
         // Draw Alpha Slider
-        context.fill(svX - 1, currentY - 1, svX + svWidth + 1, currentY + sliderHeight + 1, 0xFFFFFFFF);
-        drawAlphaSlider(context, svX, currentY, svWidth, sliderHeight);
+        context.fill(currentX - 1, currentY - 1, currentX + sliderFullWidth + 1, currentY + sliderHeight + 1, 0xFFFFFFFF);
+        drawAlphaSlider(context, currentX, currentY, sliderFullWidth, sliderHeight);
 
         // Draw Alpha Cursor
-        int alphaCursorX = svX + (int)(alpha * svWidth);
-        context.fill(alphaCursorX - 2, currentY - 1, alphaCursorX + 2, currentY, 0xFFFFFFFF); // Top
-        context.fill(alphaCursorX - 2, currentY + sliderHeight, alphaCursorX + 2, currentY + sliderHeight + 1, 0xFFFFFFFF); // Bottom
-        context.fill(alphaCursorX - 2, currentY, alphaCursorX - 1, currentY + sliderHeight, 0xFFFFFFFF); // Left
-        context.fill(alphaCursorX + 1, currentY, alphaCursorX + 2, currentY + sliderHeight, 0xFFFFFFFF); // Right
+        int alphaCursorX = currentX + (int)(alpha * sliderFullWidth);
+        context.fill(alphaCursorX - 2, currentY - 1, alphaCursorX + 2, currentY, 0xFFFFFFFF);
+        context.fill(alphaCursorX - 2, currentY + sliderHeight, alphaCursorX + 2, currentY + sliderHeight + 1, 0xFFFFFFFF);
+        context.fill(alphaCursorX - 2, currentY, alphaCursorX - 1, currentY + sliderHeight, 0xFFFFFFFF);
+        context.fill(alphaCursorX + 1, currentY, alphaCursorX + 2, currentY + sliderHeight, 0xFFFFFFFF);
 
         // Render hex field
         this.hexField.render(context, mouseX, mouseY, delta);
@@ -163,7 +174,6 @@ public class ColorPickerWidget extends ClickableWidget {
             int g = (int) (255 + (baseG - 255) * f);
             int b = (int) (255 + (baseB - 255) * f);
             int topColor = 0xFF000000 | (r << 16) | (g << 8) | b;
-            
             context.fillGradient(x + i, y, x + i + 1, y + height, topColor, 0xFF000000);
         }
     }
@@ -186,20 +196,32 @@ public class ColorPickerWidget extends ClickableWidget {
         }
     }
 
+    public boolean charTyped(net.minecraft.client.input.CharInput input) {
+        char chr = (char) input.codepoint();
+        int modifiers = input.modifiers();
+        return this.hexField.charTyped(input);
+    }
+    
+    public boolean keyPressed(net.minecraft.client.input.KeyInput input) {
+        int keyCode = input.key();
+        int scanCode = input.scancode();
+        int modifiers = input.modifiers();
+        return this.hexField.keyPressed(input);
+    }
+
     public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
         double mouseX = click.x();
         double mouseY = click.y();
         int button = click.button();
         if (!this.active || !this.visible) return false;
+        if (this.hexField.mouseClicked(click, bl)) return true;
         
-        if (this.hexField.mouseClicked(click, bl)) {
-            return true;
-        }
-        
-                                
         if (button == 0) {
-            int svX = this.getX() + previewSize + padding;
-            int svY = this.getY();
+            int currentY = this.getY() + borderPadding + 20;
+            int currentX = this.getX() + borderPadding;
+            
+            int svX = currentX + previewSize + padding;
+            int svY = currentY;
             
             if (mouseX >= svX && mouseX <= svX + svWidth && mouseY >= svY && mouseY <= svY + svHeight) {
                 draggingSV = true;
@@ -207,15 +229,16 @@ public class ColorPickerWidget extends ClickableWidget {
                 return true;
             }
             
+            int sliderFullWidth = popupWidth - borderPadding * 2;
             int hueY = svY + svHeight + padding;
-            if (mouseX >= svX && mouseX <= svX + svWidth && mouseY >= hueY && mouseY <= hueY + sliderHeight) {
+            if (mouseX >= currentX && mouseX <= currentX + sliderFullWidth && mouseY >= hueY && mouseY <= hueY + sliderHeight) {
                 draggingHue = true;
                 updateColorFromMouse(mouseX, mouseY);
                 return true;
             }
 
             int alphaY = hueY + sliderHeight + padding;
-            if (mouseX >= svX && mouseX <= svX + svWidth && mouseY >= alphaY && mouseY <= alphaY + sliderHeight) {
+            if (mouseX >= currentX && mouseX <= currentX + sliderFullWidth && mouseY >= alphaY && mouseY <= alphaY + sliderHeight) {
                 draggingAlpha = true;
                 updateColorFromMouse(mouseX, mouseY);
                 return true;
@@ -250,24 +273,26 @@ public class ColorPickerWidget extends ClickableWidget {
     }
 
     private void updateColorFromMouse(double mouseX, double mouseY) {
-        int svX = this.getX() + previewSize + padding;
-        int svY = this.getY();
+        int currentY = this.getY() + borderPadding + 20;
+        int currentX = this.getX() + borderPadding;
+        int sliderFullWidth = popupWidth - borderPadding * 2;
         
         if (draggingSV) {
+            int svX = currentX + previewSize + padding;
+            int svY = currentY;
             float s = (float)(mouseX - svX) / svWidth;
             float b = 1.0f - (float)(mouseY - svY) / svHeight;
             this.saturation = Math.max(0.0f, Math.min(1.0f, s));
             this.brightness = Math.max(0.0f, Math.min(1.0f, b));
         } else if (draggingHue) {
-            float h = (float)(mouseX - svX) / svWidth;
+            float h = (float)(mouseX - currentX) / sliderFullWidth;
             this.hue = Math.max(0.0f, Math.min(1.0f, h));
         } else if (draggingAlpha) {
-            float a = (float)(mouseX - svX) / svWidth;
+            float a = (float)(mouseX - currentX) / sliderFullWidth;
             this.alpha = Math.max(0.0f, Math.min(1.0f, a));
         }
         
         updateHexField();
-
         if (onColorChange != null) {
             onColorChange.accept(getColor());
         }

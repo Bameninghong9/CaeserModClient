@@ -107,26 +107,26 @@ public class CaeserModuleWidget extends ClickableWidget {
         context.fill(handleX, switchY + 2, handleX + handleWidth, switchY + switchHeight - 2, handleColor);
     }
 
-    @Override
     public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
         if (!this.active || !this.visible || !this.isHovered()) {
             return false;
         }
         
-        double mouseX = click.x();
-        double mouseY = click.y();
-        
+                        
         int rightMargin = this.getX() + this.width - 5;
         int switchWidth = 24;
         int switchX = rightMargin - 38;
             
-        if (click.button() == 1) { // Right click
+        if (button == 1) { // Right click
             if (this.onSettingsClick != null) {
                 this.playDownSound(MinecraftClient.getInstance().getSoundManager());
                 this.onSettingsClick.run();
                 return true;
             }
-        } else if (click.button() == 0) { // Left click
+        } else if (button == 0) { // Left click
             this.playDownSound(MinecraftClient.getInstance().getSoundManager());
             
             // Check if switch was clicked

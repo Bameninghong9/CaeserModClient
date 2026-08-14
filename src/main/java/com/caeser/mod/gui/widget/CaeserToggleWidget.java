@@ -55,19 +55,21 @@ public class CaeserToggleWidget extends ClickableWidget {
         context.drawTextWithShadow(textRenderer, this.getMessage(), this.getX() + 6, textY, 0xFFFFFFFF);
     }
 
-    @Override
     public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
         if (!this.active || !this.visible || !this.isHovered()) {
             return false;
         }
         
-        if (click.button() == 1) { // Right click
+        if (button == 1) { // Right click
             if (this.onRightClick != null) {
                 this.playDownSound(MinecraftClient.getInstance().getSoundManager());
                 this.onRightClick.run();
                 return true;
             }
-        } else if (click.button() == 0) { // Left click
+        } else if (button == 0) { // Left click
             this.playDownSound(MinecraftClient.getInstance().getSoundManager());
             this.onClick(click, bl);
             return true;

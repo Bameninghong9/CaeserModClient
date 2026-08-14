@@ -114,7 +114,7 @@ public class ScoreboardModule implements IHudModule {
                 context.getMatrices().scale(getScale(), getScale());
                 
                 IHudModule.drawBackground(context, this, 100, 120,
-                    CaeserConfig.INSTANCE.scoreboardBgType, CaeserConfig.INSTANCE.scoreboardBgColor, CaeserConfig.INSTANCE.scoreboardOutlineColor);
+                    CaeserConfig.INSTANCE.scoreboardBgType, CaeserConfig.INSTANCE.scoreboardBgColor, CaeserConfig.INSTANCE.scoreboardOutlineColor, CaeserConfig.INSTANCE.scoreboardBgCornerRadius);
                     
                 context.drawTextWithShadow(client.textRenderer, "Scoreboard", 20, 5, 0xFFFFFFFF);
                 

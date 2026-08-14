@@ -32,14 +32,14 @@ public class EntityHitboxDebugRendererMixin {
                 }
             }
 
-            int color;
-            float thickness;
+            int color = CaeserConfig.INSTANCE.hitboxColorOther;
+            float thickness = CaeserConfig.INSTANCE.hitboxThickness;
             if (isPlayer) {
-                color = isHovered ? CaeserConfig.INSTANCE.playerHitboxHoverColor : CaeserConfig.INSTANCE.playerHitboxColor;
-                thickness = CaeserConfig.INSTANCE.playerHitboxThickness;
-            } else {
-                color = isHovered ? CaeserConfig.INSTANCE.mobHitboxHoverColor : CaeserConfig.INSTANCE.mobHitboxColor;
-                thickness = CaeserConfig.INSTANCE.mobHitboxThickness;
+                color = CaeserConfig.INSTANCE.hitboxColorPlayer;
+            } else if (entity instanceof net.minecraft.entity.mob.Monster) {
+                color = CaeserConfig.INSTANCE.hitboxColorMonster;
+            } else if (entity instanceof net.minecraft.entity.passive.AnimalEntity) {
+                color = CaeserConfig.INSTANCE.hitboxColorAnimal;
             }
 
             double d = entity.getX() - entity.lastRenderX;
@@ -51,10 +51,17 @@ public class EntityHitboxDebugRendererMixin {
 
             Box box = entity.getBoundingBox().offset(-entity.getX() + x, -entity.getY() + y, -entity.getZ() + z);
             
-            
-            
             // Draw custom hitbox
             GizmoDrawing.box(box, DrawStyle.stroked(color, thickness));
+
+            // Draw look vector
+            if (CaeserConfig.INSTANCE.hitboxLookVector) {
+                net.minecraft.util.math.Vec3d lookVec = entity.getRotationVec(tickDelta);
+                net.minecraft.util.math.Vec3d eyePos = new net.minecraft.util.math.Vec3d(x, y + entity.getEyeHeight(entity.getPose()), z);
+                net.minecraft.util.math.Vec3d endPos = eyePos.add(lookVec.multiply(2.0));
+                
+                GizmoDrawing.line(eyePos, endPos, color); // Draw line using same color as hitbox
+            }
         }
     }
 }

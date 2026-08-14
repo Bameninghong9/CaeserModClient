@@ -83,7 +83,7 @@ public class TargetHudModule implements IHudModule {
 
                 // Draw background
                 IHudModule.drawBackground(context, this, 140, 40,
-                    CaeserConfig.INSTANCE.targetHudBgType, CaeserConfig.INSTANCE.targetHudBgColor, CaeserConfig.INSTANCE.targetHudOutlineColor);
+                    CaeserConfig.INSTANCE.targetHudBgType, CaeserConfig.INSTANCE.targetHudBgColor, CaeserConfig.INSTANCE.targetHudOutlineColor, CaeserConfig.INSTANCE.targetHudBgCornerRadius);
                 
                 // Draw name
                 context.drawTextWithShadow(client.textRenderer, living.getName(), 35, 5, 0xFFFFFFFF);

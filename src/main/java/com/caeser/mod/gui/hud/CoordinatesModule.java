@@ -88,7 +88,7 @@ public class CoordinatesModule implements IHudModule {
         context.getMatrices().scale(getScale(), getScale());
         
         IHudModule.drawBackground(context, this, getWidth(), getHeight(),
-            CaeserConfig.INSTANCE.coordsBgType, CaeserConfig.INSTANCE.coordsBgColor, CaeserConfig.INSTANCE.coordsOutlineColor);
+            CaeserConfig.INSTANCE.coordsBgType, CaeserConfig.INSTANCE.coordsBgColor, CaeserConfig.INSTANCE.coordsOutlineColor, CaeserConfig.INSTANCE.coordsBgCornerRadius);
             
         String[] lines = getCoordsLines();
         for (int i = 0; i < lines.length; i++) {

@@ -11,7 +11,8 @@ public class CoordinatesCategoryScreen extends HudBackgroundCategoryScreen {
         super(parent, Text.literal("Coordinates"), module,
             () -> CaeserConfig.INSTANCE.coordsBgType, val -> CaeserConfig.INSTANCE.coordsBgType = val,
             () -> CaeserConfig.INSTANCE.coordsBgColor, val -> CaeserConfig.INSTANCE.coordsBgColor = val,
-            () -> CaeserConfig.INSTANCE.coordsOutlineColor, val -> CaeserConfig.INSTANCE.coordsOutlineColor = val);
+            () -> CaeserConfig.INSTANCE.coordsOutlineColor, val -> CaeserConfig.INSTANCE.coordsOutlineColor = val,
+            () -> CaeserConfig.INSTANCE.coordsBgCornerRadius, val -> CaeserConfig.INSTANCE.coordsBgCornerRadius = val);
     }
 
     @Override

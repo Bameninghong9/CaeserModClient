@@ -55,9 +55,11 @@ public class CaeserMainMenuScreen extends Screen {
             @Override
             protected void appendClickableNarrations(net.minecraft.client.gui.screen.narration.NarrationMessageBuilder builder) {}
             
-            @Override
             public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
-                if (this.isHovered()) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (this.isHovered()) {
                     client.setScreen(new CaeserSettingsScreen(CaeserMainMenuScreen.this));
                     return true;
                 }
@@ -115,9 +117,11 @@ public class CaeserMainMenuScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
     }
 
-    @Override
     public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
-        if (click.button() == 0) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (button == 0) {
             // Check if clicking a HUD module
             for (IHudModule module : HudManager.INSTANCE.getModules()) {
                 if (module.isEnabled()) {
@@ -126,27 +130,27 @@ public class CaeserMainMenuScreen extends Screen {
                     int mw = (int)(module.getWidth() * module.getScale());
                     int mh = (int)(module.getHeight() * module.getScale());
 
-                    if (click.x() >= mx && click.x() <= mx + mw && click.y() >= my && click.y() <= my + mh) {
+                    if (mouseX >= mx && mouseX <= mx + mw && mouseY >= my && mouseY <= my + mh) {
                         
                         // Check close button (top left)
-                        if (click.x() >= mx && click.x() <= mx + 10 && click.y() >= my && click.y() <= my + 10) {
+                        if (mouseX >= mx && mouseX <= mx + 10 && mouseY >= my && mouseY <= my + 10) {
                             module.setEnabled(false);
                             CaeserConfig.save();
                             return true;
                         }
                         
                         // Check resize handle
-                        if (click.x() >= mx + mw - 6 && click.y() >= my + mh - 6) {
+                        if (mouseX >= mx + mw - 6 && mouseY >= my + mh - 6) {
                             scalingModule = module;
-                            scaleStartX = (int)click.x();
+                            scaleStartX = (int)mouseX;
                             initialScale = module.getScale();
                             return true;
                         }
                         
                         // Otherwise drag
                         draggingModule = module;
-                        dragOffsetX = (int)click.x() - mx;
-                        dragOffsetY = (int)click.y() - my;
+                        dragOffsetX = (int)mouseX - mx;
+                        dragOffsetY = (int)mouseY - my;
                         return true;
                     }
                 }
@@ -155,26 +159,30 @@ public class CaeserMainMenuScreen extends Screen {
         return super.mouseClicked(click, bl);
     }
 
-    @Override
     public boolean mouseReleased(net.minecraft.client.gui.Click click) {
-        if (click.button() == 0) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (button == 0) {
             draggingModule = null;
             scalingModule = null;
         }
         return super.mouseReleased(click);
     }
 
-    @Override
     public boolean mouseDragged(net.minecraft.client.gui.Click click, double deltaX, double deltaY) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
         if (scalingModule != null) {
-            float deltaScale = (float)(click.x() - scaleStartX) / 100.0f;
+            float deltaScale = (float)(mouseX - scaleStartX) / 100.0f;
             float newScale = Math.max(0.5f, Math.min(3.0f, initialScale + deltaScale));
             scalingModule.setScale(newScale);
             return true;
         }
         if (draggingModule != null) {
-            draggingModule.setX((int)click.x() - dragOffsetX);
-            draggingModule.setY((int)click.y() - dragOffsetY);
+            draggingModule.setX((int)mouseX - dragOffsetX);
+            draggingModule.setY((int)mouseY - dragOffsetY);
             return true;
         }
         return super.mouseDragged(click, deltaX, deltaY);

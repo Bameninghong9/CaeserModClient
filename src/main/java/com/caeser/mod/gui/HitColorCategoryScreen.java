@@ -1,7 +1,8 @@
 package com.caeser.mod.gui;
 
 import com.caeser.mod.config.CaeserConfig;
-import com.caeser.mod.gui.widget.ColorPickerWidget;
+import com.caeser.mod.gui.widget.ColorBoxWidget;
+import com.caeser.mod.gui.widget.ColorPickerPopup;
 import com.caeser.mod.gui.widget.CaeserButtonWidget;
 import com.caeser.mod.util.ICustomOverlayTexture;
 import net.minecraft.client.MinecraftClient;
@@ -11,15 +12,8 @@ import net.minecraft.text.Text;
 
 public class HitColorCategoryScreen extends Screen {
     private final Screen parent;
-    
-    private boolean isAllExpanded = true;
-
-    private ColorPickerWidget allColorPicker;
-    
-    // Layout constants
-    private final int CATEGORY_HEIGHT = 20;
-    private final int PICKER_HEIGHT = 104; // Derived from ColorPickerWidget
-    private final int PADDING = 10;
+    private ColorBoxWidget allColorBox;
+    private ColorPickerPopup activePopup;
 
     public HitColorCategoryScreen(Screen parent) {
         super(Text.literal("HitColor Categories"));
@@ -35,26 +29,21 @@ public class HitColorCategoryScreen extends Screen {
             this.client.setScreen(this.parent);
         }));
 
-        // "All" HitColor Picker
-        allColorPicker = new ColorPickerWidget(x + 10, y + CATEGORY_HEIGHT + PADDING, Text.literal("HitColor"), CaeserConfig.INSTANCE.hitColor, color -> {
-            CaeserConfig.INSTANCE.hitColor = color;
-            updateTextures();
+        allColorBox = new ColorBoxWidget(x + 10, y + 25, 20, CaeserConfig.INSTANCE.hitColor, Text.empty(), (box) -> {
+            activePopup = new ColorPickerPopup(this.width, this.height, box.getColor(), color -> {
+                box.setColor(color);
+                CaeserConfig.INSTANCE.hitColor = color;
+                updateTextures();
+            });
         });
         
-        this.addDrawableChild(allColorPicker);
-        
-        updateWidgetVisibility();
+        this.addDrawableChild(allColorBox);
     }
 
     private void updateTextures() {
         if (MinecraftClient.getInstance().gameRenderer != null && MinecraftClient.getInstance().gameRenderer.getOverlayTexture() instanceof ICustomOverlayTexture) {
             ((ICustomOverlayTexture) MinecraftClient.getInstance().gameRenderer.getOverlayTexture()).updateCustomOverlay();
         }
-    }
-
-    private void updateWidgetVisibility() {
-        allColorPicker.visible = isAllExpanded;
-        allColorPicker.active = isAllExpanded;
     }
 
     @Override
@@ -65,9 +54,9 @@ public class HitColorCategoryScreen extends Screen {
         int x = this.width / 2 - 150;
         int y = 50;
         int w = 300;
+        int panelHeight = 60;
         
         // Draw Modal Background
-        int panelHeight = isAllExpanded ? CATEGORY_HEIGHT + 130 : CATEGORY_HEIGHT;
         context.fill(x, y - 30, x + w, y + panelHeight, 0xB20A0F1D);
         
         // Draw Outline
@@ -86,34 +75,67 @@ public class HitColorCategoryScreen extends Screen {
         // Draw Title
         context.drawTextWithShadow(this.textRenderer, this.title, this.width / 2 - this.textRenderer.getWidth(this.title) / 2, y - 20, 0xFFFFFFFF);
 
-        // Draw "All" Category Header
-        boolean allHover = mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + CATEGORY_HEIGHT;
-        context.fill(x, y, x + w, y + CATEGORY_HEIGHT, allHover ? 0xB21A1F2D : 0xB20A0F1D);
-        context.drawTextWithShadow(this.textRenderer, Text.literal("All"), x + 10, y + 6, 0xFFFFFFFF);
-        String allIcon = isAllExpanded ? "V" : ">";
-        context.drawTextWithShadow(this.textRenderer, Text.literal(allIcon), x + w - 15, y + 6, 0xFF3B82F6);
+        context.drawTextWithShadow(this.textRenderer, Text.literal("HitColor"), x + 40, y + 31, 0xFFFFFFFF);
+
+        if (activePopup != null) {
+            context.fill(0, 0, this.width, this.height, 0x66000000);
+            activePopup.render(context, mouseX, mouseY, delta);
+        }
     }
 
-    @Override
     public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
-        if (click.button() == 0) {
-            int x = this.width / 2 - 150;
-            int y = 50;
-            int w = 300;
-
-            // "All" Header Click
-            if (click.x() >= x && click.x() <= x + w && click.y() >= y && click.y() <= y + CATEGORY_HEIGHT) {
-                isAllExpanded = !isAllExpanded;
-                updateWidgetVisibility();
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (activePopup != null) {
+            if (activePopup.isMouseOver(mouseX, mouseY)) {
+                return activePopup.mouseClicked(click, bl);
+            } else {
+                activePopup = null;
                 return true;
             }
         }
         return super.mouseClicked(click, bl);
     }
+    
+    public boolean mouseDragged(net.minecraft.client.gui.Click click, double deltaX, double deltaY) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (activePopup != null) return activePopup.mouseDragged(click, deltaX, deltaY);
+        return super.mouseDragged(click, deltaX, deltaY);
+    }
+    
+    public boolean mouseReleased(net.minecraft.client.gui.Click click) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
+        if (activePopup != null) return activePopup.mouseReleased(click);
+        return super.mouseReleased(click);
+    }
+    
+    public boolean charTyped(net.minecraft.client.input.CharInput input) {
+        char chr = (char) input.codepoint();
+        int modifiers = input.modifiers();
+        if (activePopup != null) return activePopup.charTyped(input);
+        return super.charTyped(input);
+    }
+    
+    public boolean keyPressed(net.minecraft.client.input.KeyInput input) {
+        int keyCode = input.key();
+        int scanCode = input.scancode();
+        int modifiers = input.modifiers();
+        if (activePopup != null) return activePopup.keyPressed(input);
+        return super.keyPressed(input);
+    }
 
     @Override
     public void close() {
-        CaeserConfig.save();
-        this.client.setScreen(parent);
+        if (activePopup != null) {
+            activePopup = null;
+        } else {
+            CaeserConfig.save();
+            this.client.setScreen(parent);
+        }
     }
 }
