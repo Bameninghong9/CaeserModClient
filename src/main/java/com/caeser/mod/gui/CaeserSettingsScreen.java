@@ -29,8 +29,8 @@ public class CaeserSettingsScreen extends Screen {
     protected void init() {
         super.init();
         
-        int panelWidth = 450;
-        int panelHeight = 300;
+        int panelWidth = 520;
+        int panelHeight = 330;
         int startX = (this.width - panelWidth) / 2;
         int startY = (this.height - panelHeight) / 2;
         
@@ -54,8 +54,8 @@ public class CaeserSettingsScreen extends Screen {
         this.clearChildren();
         this.addDrawableChild(this.searchField);
 
-        int panelWidth = 450;
-        int panelHeight = 300;
+        int panelWidth = 520;
+        int panelHeight = 330;
         int startX = (this.width - panelWidth) / 2;
         int startY = (this.height - panelHeight) / 2;
         
@@ -289,8 +289,8 @@ public class CaeserSettingsScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         context.fill(0, 0, this.width, this.height, 0x80030712);
 
-        int panelWidth = 450;
-        int panelHeight = 300;
+        int panelWidth = 520;
+        int panelHeight = 330;
         int startX = (this.width - panelWidth) / 2;
         int startY = (this.height - panelHeight) / 2;
 
@@ -359,8 +359,8 @@ public class CaeserSettingsScreen extends Screen {
     public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
         double mouseX = click.x();
         double mouseY = click.y();
-        int panelWidth = 450;
-        int panelHeight = 300;
+        int panelWidth = 520;
+        int panelHeight = 330;
         int startX = (this.width - panelWidth) / 2;
         int startY = (this.height - panelHeight) / 2;
 
