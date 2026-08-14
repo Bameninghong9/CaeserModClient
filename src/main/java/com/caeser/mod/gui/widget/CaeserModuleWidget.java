@@ -73,31 +73,28 @@ public class CaeserModuleWidget extends ClickableWidget {
         context.getMatrices().translate((float)(iconX + iconBoxSize + 8), (float)(this.getY() + 22));
         context.getMatrices().scale(0.8f, 0.8f);
         
-        String trimmedDesc = description;
-        if (textRenderer.getWidth(description) * 0.8f > this.width - iconBoxSize - 80) {
-            trimmedDesc = textRenderer.trimToWidth(description, (int)((this.width - iconBoxSize - 80) / 0.8f)) + "...";
+        int maxDescWidth = (int)((this.width - iconBoxSize - 50) / 0.8f);
+        java.util.List<net.minecraft.text.OrderedText> lines = textRenderer.wrapLines(Text.literal(description), maxDescWidth);
+        for (int i = 0; i < Math.min(2, lines.size()); i++) {
+            context.drawTextWithShadow(textRenderer, lines.get(i), 0, i * textRenderer.fontHeight + 2, 0xFFAAAAAA);
         }
-        context.drawTextWithShadow(textRenderer, trimmedDesc, 0, 0, 0xFFAAAAAA);
         context.getMatrices().popMatrix();
 
         // Right side controls
         int rightMargin = this.getX() + this.width - 5;
+        int switchWidth = 24;
+        int switchHeight = 14;
+        int switchX = rightMargin - 35; // Fixed position for all toggles
+        int switchY = this.getY() + (this.height - switchHeight) / 2;
         
         // Settings Button (...)
         if (this.onSettingsClick != null) {
             int dotWidth = textRenderer.getWidth("...");
-            int dotColor = (hovered && mouseX >= rightMargin - 25 && mouseX <= rightMargin) ? 0xFFFFFFFF : 0xFFAAAAAA;
+            int dotColor = (hovered && mouseX >= rightMargin - 15 && mouseX <= rightMargin) ? 0xFFFFFFFF : 0xFFAAAAAA;
             context.drawTextWithShadow(textRenderer, "...", rightMargin - dotWidth - 5, this.getY() + (this.height - textRenderer.fontHeight) / 2, dotColor);
-            rightMargin -= 30; // space for button
         }
         
-        // Toggle Switch
-        int switchWidth = 24;
-        int switchHeight = 14;
-        int switchX = rightMargin - switchWidth;
-        int switchY = this.getY() + (this.height - switchHeight) / 2;
-        
-        // Switch Background
+        // Toggle Switch Background
         context.fill(switchX, switchY, switchX + switchWidth, switchY + switchHeight, 0xFF050505);
         
         // Switch Handle
@@ -116,23 +113,28 @@ public class CaeserModuleWidget extends ClickableWidget {
         double mouseX = click.x();
         double mouseY = click.y();
         
-        if (click.button() == 0) {
+        int rightMargin = this.getX() + this.width - 5;
+        int switchWidth = 24;
+        int switchX = rightMargin - 35;
+            
+        if (click.button() == 1) { // Right click
+            if (this.onSettingsClick != null) {
+                this.playDownSound(MinecraftClient.getInstance().getSoundManager());
+                this.onSettingsClick.run();
+                return true;
+            }
+        } else if (click.button() == 0) { // Left click
             this.playDownSound(MinecraftClient.getInstance().getSoundManager());
             
-            int rightMargin = this.getX() + this.width - 5;
-            int switchWidth = 24;
-            int settingsWidth = this.onSettingsClick != null ? 30 : 0;
-            
-            // Check if switch was clicked (or the general right area)
-            if (mouseX >= rightMargin - switchWidth - settingsWidth) {
-                // If it was exactly the gear/dots
-                if (this.onSettingsClick != null && mouseX >= rightMargin - 25) {
-                    this.onSettingsClick.run();
-                    return true;
-                }
-                
-                // Toggle the module
+            // Check if switch was clicked
+            if (mouseX >= switchX && mouseX <= switchX + switchWidth) {
                 this.setter.accept(!this.getter.get());
+                return true;
+            }
+            
+            // If they clicked the `...` exactly (if present)
+            if (this.onSettingsClick != null && mouseX >= rightMargin - 20) {
+                this.onSettingsClick.run();
                 return true;
             }
             
