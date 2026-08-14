@@ -142,14 +142,8 @@ public class CaeserModuleWidget extends ClickableWidget {
             }
             
             // If they clicked the main body of the button
-            if (this.onSettingsClick != null) {
-                this.onSettingsClick.run();
-                return true;
-            } else {
-                // Fallback to toggle if no settings menu
-                this.setter.accept(!this.getter.get());
-                return true;
-            }
+            this.setter.accept(!this.getter.get());
+            return true;
         }
         return false;
     }
