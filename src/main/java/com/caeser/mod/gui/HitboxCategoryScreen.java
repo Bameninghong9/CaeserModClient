@@ -20,6 +20,8 @@ public class HitboxCategoryScreen extends Screen {
     private ColorPickerWidget mobBasePicker;
     private ColorPickerWidget mobHoverPicker;
     private SliderWidget mobThicknessSlider;
+    private CaeserButtonWidget toggleBtn;
+    private CaeserButtonWidget backBtn;
 
     public HitboxCategoryScreen(Screen parent) {
         super(Text.literal("Hitbox Categories"));
@@ -30,9 +32,17 @@ public class HitboxCategoryScreen extends Screen {
     protected void init() {
         super.init();
         
-        this.addDrawableChild(new CaeserButtonWidget(this.width / 2 - 170 + 8, this.height / 2 - 50 + 8, 40, 20, Text.literal("< Back"), () -> {
+        toggleBtn = new CaeserButtonWidget(0, 0, 40, 20, Text.literal(CaeserConfig.INSTANCE.hitboxes ? "ON" : "OFF"), () -> {
+            CaeserConfig.INSTANCE.hitboxes = !CaeserConfig.INSTANCE.hitboxes;
+            CaeserConfig.save();
+            this.client.setScreen(new HitboxCategoryScreen(parent));
+        });
+        this.addDrawableChild(toggleBtn);
+        
+        backBtn = new CaeserButtonWidget(0, 0, 40, 20, Text.literal("< Back"), () -> {
             this.client.setScreen(this.parent);
-        }));
+        });
+        this.addDrawableChild(backBtn);
         
         // Player Widgets
         playerBasePicker = new ColorPickerWidget(0, 0, Text.literal("Base Color"), CaeserConfig.INSTANCE.playerHitboxColor, color -> {
@@ -82,6 +92,15 @@ public class HitboxCategoryScreen extends Screen {
 
         int startX = (this.width - panelWidth) / 2;
         int startY = (this.height - panelHeight) / 2;
+
+        if (toggleBtn != null) {
+            toggleBtn.setX(startX + panelWidth - 50);
+            toggleBtn.setY(startY + 8);
+        }
+        if (backBtn != null) {
+            backBtn.setX(startX + 8);
+            backBtn.setY(startY + 8);
+        }
 
         int currentY = startY + 40;
 

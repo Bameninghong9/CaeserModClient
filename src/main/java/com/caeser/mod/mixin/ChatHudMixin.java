@@ -43,9 +43,9 @@ public abstract class ChatHudMixin {
                         
                         Object content = newArgs[1];
                         if (content instanceof Text textContent) {
-                            newArgs[1] = Text.literal("   ").append(textContent);
+                            newArgs[1] = Text.literal("     ").append(textContent);
                         } else if (content instanceof String strContent) {
-                            newArgs[1] = "   " + strContent;
+                            newArgs[1] = "     " + strContent;
                         }
                         
                         net.minecraft.text.MutableText newText = net.minecraft.text.Text.translatable(translatable.getKey(), newArgs).setStyle(message.getStyle());
@@ -56,7 +56,7 @@ public abstract class ChatHudMixin {
                     }
                 }
                 
-                return Text.literal(rawOriginal.replaceFirst("> ", ">   ")).setStyle(message.getStyle());
+                return Text.literal(rawOriginal.replaceFirst("> ", ">     ")).setStyle(message.getStyle());
             }
         }
         return message;
@@ -135,6 +135,10 @@ public abstract class ChatHudMixin {
         for (int i = 0; i < this.visibleMessages.size() && drawn < maxLines; i++) {
             ChatHudLine.Visible line = this.visibleMessages.get(i);
             
+            // Visibility check based on time
+            double d = (double)(currentTick - line.addedTime()) / 200.0;
+            if (d > 1.0 && !focused) continue;
+            
             StringBuilder sb = new StringBuilder();
             line.content().accept((index, style, codePoint) -> {
                 sb.appendCodePoint(codePoint);
@@ -160,18 +164,35 @@ public abstract class ChatHudMixin {
                     int headSize = 8;
                     int x;
                     
+                    int indicatorOffset = line.indicator() != null ? 14 : 0;
+                    
                     if (CaeserConfig.INSTANCE.chatHeadsBeforeName) {
-                        x = 2;
+                        x = 2 + indicatorOffset;
                     } else {
                         int endIdx = rawText.indexOf(">");
                         if (endIdx > 0) {
-                            x = textRenderer.getWidth(rawText.substring(0, endIdx + 1)) + 2;
+                            x = textRenderer.getWidth(rawText.substring(0, endIdx + 1)) + 4 + indicatorOffset;
                         } else {
-                            x = 2;
+                            x = 2 + indicatorOffset;
                         }
                     }
                     
-                    PlayerSkinDrawer.draw(context, skin, x, y, headSize);
+                    // Alpha handling
+                    double chatOpacity = client.options.getChatOpacity().getValue() * 0.9F + 0.1F;
+                    int tickDelta = currentTick - line.addedTime();
+                    double h = (double)tickDelta / 200.0;
+                    h = 1.0 - h;
+                    h *= 10.0;
+                    h = net.minecraft.util.math.MathHelper.clamp(h, 0.0, 1.0);
+                    h *= h;
+                    int alpha = (int)(255.0 * h * chatOpacity);
+                    if (focused) {
+                        alpha = (int)(255.0 * chatOpacity);
+                    }
+                    
+                    if (alpha >= 250) { // Only draw if mostly opaque, avoids needing complex RenderSystem blend state manipulation which changed in 1.21.1
+                        PlayerSkinDrawer.draw(context, skin, x, y, headSize);
+                    }
                 }
             }
             drawn++;

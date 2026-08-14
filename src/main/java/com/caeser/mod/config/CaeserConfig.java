@@ -118,9 +118,6 @@ public class CaeserConfig {
     public boolean noFogTerrain = true;
     public boolean noFogDimension = true;
 
-    public boolean motionBlur = false;
-    public float motionBlurStrength = 0.7f;
-
     public boolean fullbright = false;
 
     // Chat Settings

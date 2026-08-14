@@ -7,8 +7,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.MathHelper;
 
 public class TargetHudModule implements IHudModule {
+    private float displayHealth = 0.0f;
+    private LivingEntity lastEntity = null;
 
     @Override
     public String getName() {
@@ -88,17 +91,34 @@ public class TargetHudModule implements IHudModule {
                 // Draw health text
                 float health = living.getHealth();
                 float maxHealth = living.getMaxHealth();
+                
+                // Reset display health if target changed
+                if (lastEntity != living) {
+                    displayHealth = health;
+                    lastEntity = living;
+                } else {
+                    // Smooth animation
+                    float diff = health - displayHealth;
+                    if (Math.abs(diff) > 0.01f) {
+                        displayHealth = MathHelper.lerp(tickDelta * 0.3f, displayHealth, health);
+                    } else {
+                        displayHealth = health;
+                    }
+                }
+                
                 String hpText = String.format("%.1f", health) + " \u2764"; // Heart symbol
                 context.drawTextWithShadow(client.textRenderer, hpText, 35, 18, 0xFFFF5555);
                 
                 // Draw health bar
-                float healthPercent = Math.min(1.0f, Math.max(0.0f, health / maxHealth));
+                float healthPercent = Math.min(1.0f, Math.max(0.0f, displayHealth / maxHealth));
                 int barWidth = 100;
                 context.fill(35, 30, 35 + barWidth, 34, 0xFF555555);
                 context.fill(35, 30, 35 + (int)(barWidth * healthPercent), 34, 0xFF55FF55);
 
                 context.getMatrices().popMatrix();
             }
+        } else {
+            lastEntity = null;
         }
     }
 }

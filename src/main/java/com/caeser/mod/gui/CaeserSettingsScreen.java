@@ -1,7 +1,7 @@
 package com.caeser.mod.gui;
 
 import com.caeser.mod.config.CaeserConfig;
-import com.caeser.mod.gui.widget.CaeserToggleWidget;
+import com.caeser.mod.gui.widget.CaeserModuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -69,7 +69,7 @@ public class CaeserSettingsScreen extends Screen {
         boolean showGameplay = currentCategory == 3;
         
         // Helper to add widget and advance grid
-        java.util.function.Consumer<CaeserToggleWidget> addWidget = (widget) -> {
+        java.util.function.Consumer<CaeserModuleWidget> addWidget = (widget) -> {
             this.addDrawableChild(widget);
         };
 
@@ -79,7 +79,7 @@ public class CaeserSettingsScreen extends Screen {
         // COMBAT
         if (showAll || showCombat) {
             if ("hitboxes".contains(searchQuery)) {
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Hitboxes", 
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Hitboxes", "Show player and mob hitboxes", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/hitboxes.png"),
                     () -> CaeserConfig.INSTANCE.hitboxes, 
                     val -> { CaeserConfig.INSTANCE.hitboxes = val; CaeserConfig.save(); }, 
                     () -> MinecraftClient.getInstance().setScreen(new HitboxCategoryScreen(this))));
@@ -87,8 +87,8 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("hitcolor".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "HitColor", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "HitColor", "Change the color of damage tint", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/hitcolor.png"),
                     () -> CaeserConfig.INSTANCE.hitColors, 
                     val -> { CaeserConfig.INSTANCE.hitColors = val; CaeserConfig.save(); }, 
                     () -> MinecraftClient.getInstance().setScreen(new HitColorCategoryScreen(this))));
@@ -96,8 +96,8 @@ public class CaeserSettingsScreen extends Screen {
             }
             
             if ("combo counter".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Combo Counter", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Combo Counter", "Display your current hit combo", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/combo.png"),
                     () -> CaeserConfig.INSTANCE.comboCounter, 
                     val -> { CaeserConfig.INSTANCE.comboCounter = val; CaeserConfig.save(); }, 
                     createBgMenu("Combo Counter", com.caeser.mod.gui.hud.ComboModule.class,
@@ -108,8 +108,8 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("reach display".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Reach Display", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Reach Display", "Show distance to your target", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/reach.png"),
                     () -> CaeserConfig.INSTANCE.reachDisplay, 
                     val -> { CaeserConfig.INSTANCE.reachDisplay = val; CaeserConfig.save(); }, 
                     createBgMenu("Reach Display", com.caeser.mod.gui.hud.ReachModule.class,
@@ -120,8 +120,8 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("cps display".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "CPS Display", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "CPS Display", "Shows clicks per second", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/cps.png"),
                     () -> CaeserConfig.INSTANCE.cpsDisplay, 
                     val -> { CaeserConfig.INSTANCE.cpsDisplay = val; CaeserConfig.save(); }, 
                     createBgMenu("CPS Display", com.caeser.mod.gui.hud.CpsModule.class,
@@ -132,8 +132,8 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("target hud".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Target HUD", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Target HUD", "Shows info about your target", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/targethud.png"),
                     () -> CaeserConfig.INSTANCE.targetHud, 
                     val -> { CaeserConfig.INSTANCE.targetHud = val; CaeserConfig.save(); }, 
                     createBgMenu("Target HUD", com.caeser.mod.gui.hud.TargetHudModule.class,
@@ -144,8 +144,8 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("low fire".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Low Fire", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Low Fire", "Lowers fire on your screen", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/lowfire.png"),
                     () -> CaeserConfig.INSTANCE.lowFire, 
                     val -> { CaeserConfig.INSTANCE.lowFire = val; CaeserConfig.save(); }, 
                     () -> MinecraftClient.getInstance().setScreen(new LowFireCategoryScreen(this))));
@@ -156,16 +156,16 @@ public class CaeserSettingsScreen extends Screen {
         // GAMEPLAY
         if (showAll || showGameplay) {
             if ("bossbar".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Bossbar", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Bossbar", "Customize the boss health bar", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/bossbar.png"),
                     () -> CaeserConfig.INSTANCE.customBossbar, 
                     val -> { CaeserConfig.INSTANCE.customBossbar = val; CaeserConfig.save(); }, null));
                 itemsAdded++;
             }
 
             if ("scoreboard".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Scoreboard", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Scoreboard", "Move or hide the scoreboard", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/scoreboard.png"),
                     () -> CaeserConfig.INSTANCE.customScoreboard, 
                     val -> { CaeserConfig.INSTANCE.customScoreboard = val; CaeserConfig.save(); }, 
                     createBgMenu("Scoreboard", com.caeser.mod.gui.hud.ScoreboardModule.class,
@@ -176,8 +176,8 @@ public class CaeserSettingsScreen extends Screen {
             }
             
             if ("fps display".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "FPS Display", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "FPS Display", "Shows your current frames per second", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/fps.png"),
                     () -> CaeserConfig.INSTANCE.fps, 
                     val -> { CaeserConfig.INSTANCE.fps = val; CaeserConfig.save(); }, 
                     createBgMenu("FPS Display", com.caeser.mod.gui.hud.FpsModule.class,
@@ -188,26 +188,18 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("no fog".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "No Fog", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "No Fog", "Removes fog from the game", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/nofog.png"),
                     () -> CaeserConfig.INSTANCE.noFog, 
                     val -> { CaeserConfig.INSTANCE.noFog = val; CaeserConfig.save(); }, 
                     () -> MinecraftClient.getInstance().setScreen(new NoFogCategoryScreen(this))));
                 itemsAdded++;
             }
 
-            if ("motion blur".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Motion Blur", 
-                    () -> CaeserConfig.INSTANCE.motionBlur, 
-                    val -> { CaeserConfig.INSTANCE.motionBlur = val; CaeserConfig.save(); }, 
-                    () -> MinecraftClient.getInstance().setScreen(new MotionBlurCategoryScreen(this))));
-                itemsAdded++;
-            }
 
             if ("uptime".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Uptime", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Uptime", "Shows how long you've played", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/uptime.png"),
                     () -> CaeserConfig.INSTANCE.uptime, 
                     val -> { CaeserConfig.INSTANCE.uptime = val; CaeserConfig.save(); }, 
                     () -> MinecraftClient.getInstance().setScreen(new UptimeCategoryScreen(this, com.caeser.mod.gui.hud.HudManager.INSTANCE.getModule(com.caeser.mod.gui.hud.UptimeModule.class)))));
@@ -215,8 +207,8 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("coordinates".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Coordinates", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Coordinates", "Shows your position in the world", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/coordinates.png"),
                     () -> CaeserConfig.INSTANCE.coordinates, 
                     val -> { CaeserConfig.INSTANCE.coordinates = val; CaeserConfig.save(); }, 
                     () -> MinecraftClient.getInstance().setScreen(new CoordinatesCategoryScreen(this, com.caeser.mod.gui.hud.HudManager.INSTANCE.getModule(com.caeser.mod.gui.hud.CoordinatesModule.class)))));
@@ -224,8 +216,8 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("fullbright".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Fullbright", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Fullbright", "Makes the game permanently bright", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/fullbright.png"),
                     () -> CaeserConfig.INSTANCE.fullbright, 
                     val -> { CaeserConfig.INSTANCE.fullbright = val; CaeserConfig.save(); }, null));
                 itemsAdded++;
@@ -235,8 +227,8 @@ public class CaeserSettingsScreen extends Screen {
         // CHAT
         if (showAll || showChat) {
             if ("chat heads".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Chat Heads", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Chat Heads", "Show player heads in chat", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/chatheads.png"),
                     () -> CaeserConfig.INSTANCE.chatHeads, 
                     val -> { CaeserConfig.INSTANCE.chatHeads = val; CaeserConfig.save(); }, 
                     () -> MinecraftClient.getInstance().setScreen(new ChatHeadsCategoryScreen(this))));
@@ -244,8 +236,8 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("stack messages".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Stack Messages", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Stack Messages", "Stacks repeated chat messages", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/stackmessages.png"),
                     () -> CaeserConfig.INSTANCE.stackMessages, 
                     val -> { CaeserConfig.INSTANCE.stackMessages = val; CaeserConfig.save(); }, 
                     () -> MinecraftClient.getInstance().setScreen(new StackingCategoryScreen(this))));
@@ -253,8 +245,8 @@ public class CaeserSettingsScreen extends Screen {
             }
 
             if ("autotext".contains(searchQuery)) {
-                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 24; }
-                addWidget.accept(createToggle(currentX, currentY, columnWidth, "AutoText", 
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 44; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "AutoText", "Send commands automatically", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/autotext.png"),
                     () -> CaeserConfig.INSTANCE.autoTextEnabled, 
                     val -> { CaeserConfig.INSTANCE.autoTextEnabled = val; CaeserConfig.save(); }, 
                     () -> MinecraftClient.getInstance().setScreen(new AutoTextScreen(this))));
@@ -264,7 +256,7 @@ public class CaeserSettingsScreen extends Screen {
         
         // Calculate max scroll
         if (itemsAdded > 0) {
-            maxScroll = Math.max(0, currentY + 24 - (startY + panelHeight) + 10);
+            maxScroll = Math.max(0, currentY + 44 - (startY + panelHeight) + 10);
             scrollAmount = Math.max(0, Math.min(scrollAmount, maxScroll));
         } else {
             maxScroll = 0;
@@ -272,8 +264,8 @@ public class CaeserSettingsScreen extends Screen {
         }
     }
 
-    private CaeserToggleWidget createToggle(int x, int y, int width, String title, java.util.function.Supplier<Boolean> getter, java.util.function.Consumer<Boolean> setter, Runnable rightClick) {
-        return new CaeserToggleWidget(x, y - (int)scrollAmount, width, 20, Text.literal(title), getter, setter, rightClick);
+    private CaeserModuleWidget createToggle(int x, int y, int width, String title, String description, net.minecraft.util.Identifier iconId, java.util.function.Supplier<Boolean> getter, java.util.function.Consumer<Boolean> setter, Runnable rightClick) {
+        return new CaeserModuleWidget(x, y - (int)scrollAmount, width, 40, Text.literal(title), description, iconId, getter, setter, rightClick);
     }
 
     private Runnable createBgMenu(String name, Class<? extends com.caeser.mod.gui.hud.IHudModule> moduleClass, java.util.function.Supplier<HudBackgroundType> bgTypeGetter, java.util.function.Consumer<HudBackgroundType> bgTypeSetter,

@@ -37,7 +37,10 @@ public class HudBackgroundCategoryScreen extends CaeserModalScreen {
             Supplier<HudBackgroundType> bgTypeGetter, Consumer<HudBackgroundType> bgTypeSetter,
             Supplier<Integer> bgColorGetter, Consumer<Integer> bgColorSetter,
             Supplier<Integer> outlineColorGetter, Consumer<Integer> outlineColorSetter) {
-        super(parent, title);
+        super(parent, title, module::isEnabled, val -> {
+            module.setEnabled(val);
+            CaeserConfig.save();
+        });
         this.module = module;
         this.bgTypeGetter = bgTypeGetter;
         this.bgTypeSetter = bgTypeSetter;
@@ -51,13 +54,6 @@ public class HudBackgroundCategoryScreen extends CaeserModalScreen {
     protected void initModal() {
         this.currentY = this.startY + 40;
         int contentX = this.startX + 10;
-
-        // Toggle Button (ON / OFF) at top right of the panel
-        this.addDrawableChild(new CaeserButtonWidget(this.startX + this.panelWidth - 50, this.startY + 10, 40, 20, Text.literal(module.isEnabled() ? "ON" : "OFF"), () -> {
-            module.setEnabled(!module.isEnabled());
-            CaeserConfig.save();
-            this.client.setScreen(new HudBackgroundCategoryScreen(parent, title, module, bgTypeGetter, bgTypeSetter, bgColorGetter, bgColorSetter, outlineColorGetter, outlineColorSetter));
-        }));
         
         addCustomWidgets(contentX);
         

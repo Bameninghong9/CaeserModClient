@@ -4,19 +4,22 @@ import com.caeser.mod.config.CaeserConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class CpsModule implements IHudModule {
-    private static final List<Long> clicks = new ArrayList<>();
+    private static final Queue<Long> clicks = new ArrayDeque<>();
     
     public static void addClick() {
+        if (!CaeserConfig.INSTANCE.cpsDisplay) return;
         clicks.add(System.currentTimeMillis());
     }
 
     private int getCps() {
         long time = System.currentTimeMillis();
-        clicks.removeIf(t -> time - t > 1000);
+        while (!clicks.isEmpty() && time - clicks.peek() > 1000) {
+            clicks.poll();
+        }
         return clicks.size();
     }
 
@@ -78,7 +81,9 @@ public class CpsModule implements IHudModule {
     @Override
     public void render(DrawContext context, float tickDelta) {
         long time = System.currentTimeMillis();
-        clicks.removeIf(clickTime -> time - clickTime > 1000);
+        while (!clicks.isEmpty() && time - clicks.peek() > 1000) {
+            clicks.poll();
+        }
         String text = "CPS: " + clicks.size();
         
         context.getMatrices().pushMatrix();

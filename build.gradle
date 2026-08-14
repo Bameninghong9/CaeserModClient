@@ -30,6 +30,9 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.3.5")
+	implementation("io.github.llamalad7:mixinextras-fabric:0.3.5")
+	include("io.github.llamalad7:mixinextras-fabric:0.3.5")
 }
 
 processResources {

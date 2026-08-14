@@ -8,8 +8,9 @@ import net.minecraft.text.Text;
 
 public class NoFogCategoryScreen extends CaeserModalScreen {
     public NoFogCategoryScreen(Screen parent) {
-        super(parent, Text.literal("No Fog Types"));
-        
+        super(parent, Text.literal("No Fog Types"), 
+              () -> CaeserConfig.INSTANCE.noFog, 
+              val -> { CaeserConfig.INSTANCE.noFog = val; CaeserConfig.save(); });
     }
 
     @Override
@@ -42,5 +43,4 @@ public class NoFogCategoryScreen extends CaeserModalScreen {
             () -> CaeserConfig.INSTANCE.noFogDimension,
             val -> { CaeserConfig.INSTANCE.noFogDimension = val; CaeserConfig.save(); }, null));
     }
-
-    }
+}

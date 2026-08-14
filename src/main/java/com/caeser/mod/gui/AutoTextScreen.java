@@ -12,8 +12,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutoTextScreen extends Screen {
-    private final Screen parent;
+public class AutoTextScreen extends CaeserModalScreen {
     private int expandedIndex = -1; // -1 for none, -2 for "NEW AUTO TEXT", 0+ for existing entries
     private boolean listeningForKey = false;
     private int listeningForIndex = -1; // Which entry are we listening for? -2 for new
@@ -34,22 +33,15 @@ public class AutoTextScreen extends Screen {
     }
 
     public AutoTextScreen(Screen parent) {
-        super(Text.literal("AutoText"));
-        this.parent = parent;
+        super(parent, Text.literal("AutoText Settings"), 
+              () -> CaeserConfig.INSTANCE.autoTextEnabled, 
+              val -> { CaeserConfig.INSTANCE.autoTextEnabled = val; CaeserConfig.save(); });
+        this.panelWidth = 340;
+        this.panelHeight = 240;
     }
 
     @Override
-    protected void init() {
-        this.clearChildren();
-        super.init();
-
-        int panelWidth = 340;
-        int startX = (this.width - panelWidth) / 2;
-        
-        this.addDrawableChild(new com.caeser.mod.gui.widget.CaeserButtonWidget(startX, 15, 40, 20, Text.literal("< Back"), () -> {
-            this.client.setScreen(this.parent);
-        }));
-
+    protected void initModal() {
         this.newCommandField = new TextFieldWidget(this.textRenderer, startX + 100, 0, panelWidth - 120, 16, Text.literal("Command"));
         this.newCommandField.setMaxLength(256);
         this.addDrawableChild(this.newCommandField);
@@ -83,16 +75,11 @@ public class AutoTextScreen extends Screen {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context, mouseX, mouseY, delta);
-        
+    public void renderModalForeground(DrawContext context, int mouseX, int mouseY, float delta) {
         this.newCommandField.setVisible(false);
         this.editCommandField.setVisible(false);
         
-        int panelWidth = 340;
-        int startX = (this.width - panelWidth) / 2;
-        int startY = 40;
-        
+        int startY = this.startY + 40;
         int currentY = startY;
         
         for (AccordionEntry entry : entries) {
@@ -182,8 +169,6 @@ public class AutoTextScreen extends Screen {
                 currentY += 5;
             }
         }
-        
-        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override
@@ -191,9 +176,6 @@ public class AutoTextScreen extends Screen {
         double mouseX = click.x();
         double mouseY = click.y();
         if (super.mouseClicked(click, bl)) return true;
-        
-        int panelWidth = 340;
-        int startX = (this.width - panelWidth) / 2;
         
         for (AccordionEntry entry : entries) {
             boolean expanded = (entry.isNew && expandedIndex == -2) || (!entry.isNew && expandedIndex == entry.index);
@@ -291,10 +273,5 @@ public class AutoTextScreen extends Screen {
             return true;
         }
         return super.charTyped(input);
-    }
-    
-    @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.fill(0, 0, this.width, this.height, 0x88000000);
     }
 }

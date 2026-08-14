@@ -7,7 +7,8 @@ import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
@@ -74,8 +75,8 @@ public class InGameHudMixin {
         }
     }
     
-    @Redirect(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"))
-    private void redirectScoreboardFill(DrawContext context, int x1, int y1, int x2, int y2, int color) {
+    @WrapOperation(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;fill(IIIII)V"))
+    private void wrapScoreboardFill(DrawContext context, int x1, int y1, int x2, int y2, int color, Operation<Void> original) {
         if (com.caeser.mod.gui.hud.ScoreboardModule.capturing) {
             com.caeser.mod.gui.hud.ScoreboardModule.capturedMinX = Math.min(com.caeser.mod.gui.hud.ScoreboardModule.capturedMinX, Math.min(x1, x2));
             com.caeser.mod.gui.hud.ScoreboardModule.capturedMinY = Math.min(com.caeser.mod.gui.hud.ScoreboardModule.capturedMinY, Math.min(y1, y2));
@@ -83,7 +84,7 @@ public class InGameHudMixin {
             com.caeser.mod.gui.hud.ScoreboardModule.capturedMaxY = Math.max(com.caeser.mod.gui.hud.ScoreboardModule.capturedMaxY, Math.max(y1, y2));
         }
         if (!com.caeser.mod.config.CaeserConfig.INSTANCE.customScoreboard) {
-            context.fill(x1, y1, x2, y2, color);
+            original.call(context, x1, y1, x2, y2, color);
         }
     }
 
