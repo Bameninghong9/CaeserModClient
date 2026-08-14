@@ -34,7 +34,7 @@ public class KeyLayoutEditorScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         // Draw dark background
-        this.renderBackground(context, mouseX, mouseY, delta);
+        context.fill(0, 0, this.width, this.height, 0x80000000);
         
         context.drawTextWithShadow(this.textRenderer, Text.literal("Left Click to Drag. Right Click to Toggle Visibility. ESC to Save."), 10, 10, 0xFFFFFF);
 
@@ -142,5 +142,6 @@ public class KeyLayoutEditorScreen extends Screen {
         this.client.setScreen(parent);
     }
 }
+
 
 
