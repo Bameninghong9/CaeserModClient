@@ -82,16 +82,19 @@ public class CaeserModuleWidget extends ClickableWidget {
 
         // Right side controls
         int rightMargin = this.getX() + this.width - 5;
+        
+        // Toggle Switch Background (Moved left to make room for dots)
         int switchWidth = 24;
         int switchHeight = 14;
-        int switchX = rightMargin - 35; // Fixed position for all toggles
+        int switchX = rightMargin - 38; // Leaves space for dots
         int switchY = this.getY() + (this.height - switchHeight) / 2;
         
         // Settings Button (...)
         if (this.onSettingsClick != null) {
             int dotWidth = textRenderer.getWidth("...");
-            int dotColor = (hovered && mouseX >= rightMargin - 15 && mouseX <= rightMargin) ? 0xFFFFFFFF : 0xFFAAAAAA;
-            context.drawTextWithShadow(textRenderer, "...", rightMargin - dotWidth - 5, this.getY() + (this.height - textRenderer.fontHeight) / 2, dotColor);
+            int dotColor = (hovered && mouseX >= rightMargin - 12 && mouseX <= rightMargin) ? 0xFFFFFFFF : 0xFFAAAAAA;
+            // Draw dots slightly to the right of the switch
+            context.drawTextWithShadow(textRenderer, "...", rightMargin - dotWidth, this.getY() + (this.height - textRenderer.fontHeight) / 2, dotColor);
         }
         
         // Toggle Switch Background
@@ -115,7 +118,7 @@ public class CaeserModuleWidget extends ClickableWidget {
         
         int rightMargin = this.getX() + this.width - 5;
         int switchWidth = 24;
-        int switchX = rightMargin - 35;
+        int switchX = rightMargin - 38;
             
         if (click.button() == 1) { // Right click
             if (this.onSettingsClick != null) {
@@ -133,7 +136,7 @@ public class CaeserModuleWidget extends ClickableWidget {
             }
             
             // If they clicked the `...` exactly (if present)
-            if (this.onSettingsClick != null && mouseX >= rightMargin - 20) {
+            if (this.onSettingsClick != null && mouseX >= rightMargin - 12) {
                 this.onSettingsClick.run();
                 return true;
             }

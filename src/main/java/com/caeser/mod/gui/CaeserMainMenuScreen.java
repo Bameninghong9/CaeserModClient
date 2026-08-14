@@ -33,20 +33,43 @@ public class CaeserMainMenuScreen extends Screen {
         int x = this.width / 2 - buttonWidth / 2;
         int y = this.height / 2 - buttonHeight / 2;
         
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("Mod Menu"), button -> {
-            this.client.setScreen(new CaeserSettingsScreen(this));
-        }).dimensions(x, y, buttonWidth, buttonHeight).build());
+        this.addDrawableChild(new net.minecraft.client.gui.widget.ClickableWidget(x, y, buttonWidth, buttonHeight, Text.literal("Caeser Mod Menu")) {
+            @Override
+            public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+                boolean hovered = this.isHovered();
+                int bgColor = hovered ? 0xFF2A2E3D : 0xFF1E212A;
+                
+                context.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, bgColor);
+                
+                // Border
+                context.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + 1, 0xFF363B4F); // Top
+                context.fill(this.getX(), this.getY() + this.height - 1, this.getX() + this.width, this.getY() + this.height, 0xFF363B4F); // Bottom
+                context.fill(this.getX(), this.getY(), this.getX() + 1, this.getY() + this.height, 0xFF363B4F); // Left
+                context.fill(this.getX() + this.width - 1, this.getY(), this.getX() + this.width, this.getY() + this.height, 0xFF363B4F); // Right
+                
+                // Text
+                int textWidth = client.textRenderer.getWidth(this.getMessage());
+                context.drawTextWithShadow(client.textRenderer, this.getMessage(), this.getX() + (this.width - textWidth) / 2, this.getY() + (this.height - 8) / 2, 0xFFFFFFFF);
+            }
+            
+            @Override
+            protected void appendClickableNarrations(net.minecraft.client.gui.screen.narration.NarrationMessageBuilder builder) {}
+            
+            @Override
+            public boolean mouseClicked(net.minecraft.client.gui.Click click, boolean bl) {
+                if (this.isHovered()) {
+                    client.setScreen(new CaeserSettingsScreen(CaeserMainMenuScreen.this));
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         // Blur background and render darkening
         super.renderBackground(context, mouseX, mouseY, delta);
-        
-        // Draw centered title/instructions above the button
-        context.drawTextWithShadow(this.textRenderer, "Drag HUD elements to move them", this.width / 2 - this.textRenderer.getWidth("Drag HUD elements to move them") / 2, this.height / 2 - 40, 0xFFFFFFFF);
-
-        // Render HUD modules
         for (IHudModule module : HudManager.INSTANCE.getModules()) {
             if (module.isEnabled()) {
                 module.render(context, delta);
