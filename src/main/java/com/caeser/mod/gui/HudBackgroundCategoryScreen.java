@@ -65,6 +65,13 @@ public class HudBackgroundCategoryScreen extends CaeserModalScreen {
         
         addCustomWidgets(contentX);
         
+        if (module instanceof com.caeser.mod.gui.hud.KeystrokesModule || module instanceof com.caeser.mod.gui.hud.KeyboardModule) {
+            this.addDrawableChild(new com.caeser.mod.gui.widget.CaeserButtonWidget(contentX, currentY, 360, 20, Text.literal("Edit Key Layout"), () -> {
+                this.client.setScreen(new com.caeser.mod.gui.hud.KeyLayoutEditorScreen(this, module));
+            }));
+            currentY += 30;
+        }
+        
         // Background Type Button
         this.addDrawableChild(new CaeserButtonWidget(contentX, currentY, 360, 20, Text.literal("Background: " + bgTypeGetter.get().name()), () -> {
             HudBackgroundType next = HudBackgroundType.values()[(bgTypeGetter.get().ordinal() + 1) % HudBackgroundType.values().length];
@@ -143,11 +150,19 @@ public class HudBackgroundCategoryScreen extends CaeserModalScreen {
             int mw = (int)(module.getWidth() * module.getScale());
             int mh = (int)(module.getHeight() * module.getScale());
             
-            // Draw a subtle border around the module to show it's selected/draggable (yellow highlight)
-            context.fill(mx - 1, my - 1, mx + mw + 1, my, 0xFFFFFF00); // Top
-            context.fill(mx - 1, my + mh, mx + mw + 1, my + mh + 1, 0xFFFFFF00); // Bottom
-            context.fill(mx - 1, my, mx, my + mh, 0xFFFFFF00); // Left
-            context.fill(mx + mw, my, mx + mw + 1, my + mh, 0xFFFFFF00); // Right
+            // Draw a subtle, sleek modern border around the module instead of the ugly yellow line
+            int padding = 2;
+            int sleekColor = 0x80FFFFFF; // Semi-transparent white
+            context.fill(mx - padding, my - padding, mx + mw + padding, my - padding + 1, sleekColor); // Top
+            context.fill(mx - padding, my + mh + padding - 1, mx + mw + padding, my + mh + padding, sleekColor); // Bottom
+            context.fill(mx - padding, my - padding, mx - padding + 1, my + mh + padding, sleekColor); // Left
+            context.fill(mx + mw + padding - 1, my - padding, mx + mw + padding, my + mh + padding, sleekColor); // Right
+            
+            // Subtle corner highlights
+            context.fill(mx - padding, my - padding, mx - padding + 3, my - padding + 3, 0xFFFFFFFF);
+            context.fill(mx + mw + padding - 3, my - padding, mx + mw + padding, my - padding + 3, 0xFFFFFFFF);
+            context.fill(mx - padding, my + mh + padding - 3, mx - padding + 3, my + mh + padding, 0xFFFFFFFF);
+            context.fill(mx + mw + padding - 3, my + mh + padding - 3, mx + mw + padding, my + mh + padding, 0xFFFFFFFF);
         }
     }
 

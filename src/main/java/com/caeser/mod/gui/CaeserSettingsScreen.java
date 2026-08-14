@@ -239,6 +239,33 @@ public class CaeserSettingsScreen extends Screen {
                 itemsAdded++;
             }
 
+                        if ("ping".contains(searchQuery)) {
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 52; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Ping", "Shows your connection latency", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/uptime.png"),
+                    () -> CaeserConfig.INSTANCE.pingEnabled, 
+                    val -> { CaeserConfig.INSTANCE.pingEnabled = val; CaeserConfig.save(); }, 
+                    createBgMenu("Ping", com.caeser.mod.gui.hud.PingModule.class,
+                        () -> CaeserConfig.INSTANCE.pingBgType, val -> CaeserConfig.INSTANCE.pingBgType = val,
+                        () -> CaeserConfig.INSTANCE.pingBgColor, val -> CaeserConfig.INSTANCE.pingBgColor = val,
+                        () -> CaeserConfig.INSTANCE.pingOutlineColor, val -> CaeserConfig.INSTANCE.pingOutlineColor = val,
+                        () -> CaeserConfig.INSTANCE.pingCornerRadius, val -> CaeserConfig.INSTANCE.pingCornerRadius = val)));
+                itemsAdded++;
+            }
+
+            if ("keyboard".contains(searchQuery)) {
+                if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 52; }
+                addWidget.accept(createToggle(currentX, currentY, columnWidth, "Keyboard", "Shows the full keyboard on screen", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/cps.png"),
+                    () -> CaeserConfig.INSTANCE.keyboardEnabled, 
+                    val -> { CaeserConfig.INSTANCE.keyboardEnabled = val; CaeserConfig.save(); }, 
+                    createBgMenu("Keyboard", com.caeser.mod.gui.hud.KeyboardModule.class,
+                        () -> CaeserConfig.INSTANCE.keyboardBgType, val -> CaeserConfig.INSTANCE.keyboardBgType = val,
+                        () -> CaeserConfig.INSTANCE.keyboardBgColor, val -> CaeserConfig.INSTANCE.keyboardBgColor = val,
+                        () -> CaeserConfig.INSTANCE.keyboardOutlineColor, val -> CaeserConfig.INSTANCE.keyboardOutlineColor = val,
+                        () -> CaeserConfig.INSTANCE.keyboardCornerRadius, val -> CaeserConfig.INSTANCE.keyboardCornerRadius = val)));
+                itemsAdded++;
+            }
+
+
             if ("coordinates".contains(searchQuery)) {
                 if (itemsAdded % 2 == 1) { currentX += columnWidth + 10; } else if (itemsAdded > 0) { currentX = startX + 10; currentY += 52; }
                 addWidget.accept(createToggle(currentX, currentY, columnWidth, "Coordinates", "Shows your position in the world", net.minecraft.util.Identifier.of("caeserclient", "textures/gui/icons/coordinates.png"),
@@ -422,3 +449,5 @@ public class CaeserSettingsScreen extends Screen {
         }
     }
 }
+
+

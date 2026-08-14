@@ -21,7 +21,7 @@ public interface IHudModule {
             return; // Draw nothing
         }
         
-        int padding = 2;
+        int padding = 3;
         float x = -padding;
         float y = -padding;
         float w = width + padding * 2;
@@ -29,19 +29,24 @@ public interface IHudModule {
 
         switch (type) {
             case VANILLA:
-            case BLUR: // Semi-transparent dark
+                // Clean vanilla-like transparent black
                 com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x, y, w, h, cornerRadius, 0x80000000);
+                break;
+            case BLUR:
+                // Slightly darker blur with a subtle bright inner edge
+                com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x, y, w, h, cornerRadius, 0x90050505);
+                com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x + 0.5f, y + 0.5f, w - 1, h - 1, cornerRadius > 0 ? cornerRadius - 0.5f : 0, 0x20FFFFFF);
                 break;
             case COLOR:
                 com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x, y, w, h, cornerRadius, bgColor);
                 break;
             case OUTLINE:
                 com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x, y, w, h, cornerRadius, outlineColor);
-                com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x + 1, y + 1, w - 2, h - 2, cornerRadius > 0 ? cornerRadius - 1 : 0, 0x80000000);
+                com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x + 1.5f, y + 1.5f, w - 3, h - 3, cornerRadius > 0 ? cornerRadius - 1.5f : 0, 0xA0000000);
                 break;
             case TOOLTIP:
-                com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x, y, w, h, cornerRadius, 0xFF5000FF);
-                com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x + 1, y + 1, w - 2, h - 2, cornerRadius > 0 ? cornerRadius - 1 : 0, 0xF0100010);
+                com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x, y, w, h, cornerRadius, 0xFF2A0054);
+                com.caeser.mod.util.RenderUtils.drawRoundedRect(context, x + 1, y + 1, w - 2, h - 2, cornerRadius > 0 ? cornerRadius - 1 : 0, 0xD010001A);
                 break;
         }
     }

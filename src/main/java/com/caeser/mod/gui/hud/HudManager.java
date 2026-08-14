@@ -21,7 +21,9 @@ public class HudManager {
         modules.add(new UptimeModule());
         modules.add(new CoordinatesModule());
         modules.add(new FpsModule());
+        modules.add(new PingModule());
         modules.add(new KeystrokesModule());
+        modules.add(new KeyboardModule());
     }
 
     public List<IHudModule> getModules() {

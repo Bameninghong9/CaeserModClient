@@ -126,14 +126,6 @@ public class CaeserConfig {
     public int hitboxColorOther = 0xFFFFFFFF;
     public boolean hitboxLookVector = true;
 
-    // Keystrokes
-    public boolean keystrokes = false;
-    public int keystrokesX = 10, keystrokesY = 100;
-    public float keystrokesScale = 1.0f;
-    public HudBackgroundType keystrokesBgType = HudBackgroundType.TRANSPARENT;
-    public int keystrokesBgColor = 0x80000000;
-    public int keystrokesOutlineColor = 0xFF000000;
-    public float keystrokesBgCornerRadius = 0.0f;
 
     // Time Changer
     public boolean timeChanger = false;
@@ -157,13 +149,46 @@ public class CaeserConfig {
     public boolean autoTextEnabled = false;
     public java.util.List<AutoTextEntry> autoTexts = new java.util.ArrayList<>();
 
+    // Ping
+    public boolean pingEnabled = true;
+    public int pingX = 10;
+    public int pingY = 90;
+    public float pingScale = 1.0f;
+    public int pingTextColor = 0xFFFFFFFF;
+    public HudBackgroundType pingBgType = HudBackgroundType.VANILLA;
+    public int pingBgColor = 0x80000000;
+    public int pingOutlineColor = 0xFFFFFFFF;
+    public float pingCornerRadius = 0.0f;
+
+    // Keystrokes
+    public boolean keystrokes = true;
+    public int keystrokesX = 10;
+    public int keystrokesY = 110;
+    public float keystrokesScale = 1.0f;
+    public HudBackgroundType keystrokesBgType = HudBackgroundType.VANILLA;
+    public int keystrokesBgColor = 0x80000000;
+    public int keystrokesOutlineColor = 0xFFFFFFFF;
+    public float keystrokesCornerRadius = 0.0f;
+    public java.util.Map<String, int[]> keystrokesLayout = new java.util.HashMap<>();
+
+    // Keyboard
+    public boolean keyboardEnabled = false;
+    public int keyboardX = 10;
+    public int keyboardY = 170;
+    public float keyboardScale = 1.0f;
+    public HudBackgroundType keyboardBgType = HudBackgroundType.VANILLA;
+    public int keyboardBgColor = 0x80000000;
+    public int keyboardOutlineColor = 0xFFFFFFFF;
+    public float keyboardCornerRadius = 0.0f;
+    public java.util.Map<String, int[]> fullKeyboardLayout = new java.util.HashMap<>();
+
     public static CaeserConfig INSTANCE = new CaeserConfig();
 
     public static void load() {
         if (CONFIG_FILE.exists()) {
-            try (FileReader reader = new FileReader(CONFIG_FILE)) {
+            try (java.io.FileReader reader = new java.io.FileReader(CONFIG_FILE)) {
                 INSTANCE = GSON.fromJson(reader, CaeserConfig.class);
-            } catch (IOException e) {
+            } catch (java.io.IOException e) {
                 e.printStackTrace();
             }
         } else {
@@ -172,10 +197,12 @@ public class CaeserConfig {
     }
 
     public static void save() {
-        try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
+        try (java.io.FileWriter writer = new java.io.FileWriter(CONFIG_FILE)) {
             GSON.toJson(INSTANCE, writer);
-        } catch (IOException e) {
+        } catch (java.io.IOException e) {
             e.printStackTrace();
         }
     }
 }
+
+
