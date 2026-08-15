@@ -31,19 +31,25 @@ public abstract class PlayerEntityModelMixin extends BipedEntityModel<PlayerEnti
         }
     }
 
-    private void applyBone(net.minecraft.client.model.ModelPart part, String name, float tickDelta) {
-        float[] rot = EmoteManager.INSTANCE.getInterpolatedRotation(name, tickDelta);
+    private void applyBone(net.minecraft.client.model.ModelPart part, String boneName, float partialTicks) {
+        float[] rot = com.caeser.mod.emote.PreviewHelper.previewEmoteName != null 
+            ? com.caeser.mod.emote.PreviewHelper.getPreviewRotation(boneName)
+            : EmoteManager.INSTANCE.getInterpolatedRotation(boneName, partialTicks);
+            
         if (rot != null) {
             part.pitch = (float) Math.toRadians(rot[0]);
             part.yaw = (float) Math.toRadians(rot[1]);
             part.roll = (float) Math.toRadians(rot[2]);
         }
-        float[] pos = EmoteManager.INSTANCE.getInterpolatedPosition(name, tickDelta);
+        
+        float[] pos = com.caeser.mod.emote.PreviewHelper.previewEmoteName != null 
+            ? com.caeser.mod.emote.PreviewHelper.getPreviewPosition(boneName)
+            : EmoteManager.INSTANCE.getInterpolatedPosition(boneName, partialTicks);
+            
         if (pos != null) {
             part.originX += pos[0];
-            part.originY -= pos[1]; // Bedrock Y is up, Minecraft Y is down
+            part.originY -= pos[1];
             part.originZ += pos[2];
         }
     }
 }
-

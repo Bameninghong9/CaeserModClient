@@ -1,0 +1,95 @@
+package com.caeser.mod.gui;
+
+import com.caeser.mod.emote.EmoteManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
+
+public class EmoteWheelScreen extends Screen {
+    private int hoveredSlot = -1;
+    // Slots for the 8 emotes: 0=top, 1=top-right, 2=right, etc.
+    public static String[] assignedEmotes = new String[8];
+    
+    static {
+        assignedEmotes[0] = "emotes/new_sit.json";
+        assignedEmotes[1] = "emotes/tpose.json";
+        assignedEmotes[2] = "emotes/storytime.json";
+        assignedEmotes[3] = "emotes/pray.json";
+        assignedEmotes[4] = "emotes/ballettspin.json";
+        assignedEmotes[5] = "emotes/wave.json";
+        assignedEmotes[6] = "emotes/ausrutschen.json";
+        assignedEmotes[7] = "emotes/chilling.json";
+    }
+
+    public EmoteWheelScreen() {
+        super(Text.literal("Emotes"));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        long handle = MinecraftClient.getInstance().getWindow().getHandle();
+        if (GLFW.glfwGetKey(handle, GLFW.GLFW_KEY_B) != GLFW.GLFW_PRESS) {
+            this.client.setScreen(null);
+            if (hoveredSlot != -1 && assignedEmotes[hoveredSlot] != null) {
+                EmoteManager.INSTANCE.playEmote(assignedEmotes[hoveredSlot]);
+            }
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && hoveredSlot != -1) {
+            this.client.setScreen(new EmoteSelectionScreen(this, hoveredSlot));
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        context.fill(0, 0, this.width, this.height, 0x50000000);
+        
+        int centerX = this.width / 2;
+        int centerY = this.height / 2;
+        int radius = 100;
+        int slotSize = 64;
+        
+        hoveredSlot = -1;
+        
+        for (int i = 0; i < 8; i++) {
+            double angle = i * (Math.PI / 4) - (Math.PI / 2);
+            int slotX = centerX + (int)(Math.cos(angle) * radius) - slotSize / 2;
+            int slotY = centerY + (int)(Math.sin(angle) * radius) - slotSize / 2;
+            
+            boolean isHovered = mouseX >= slotX && mouseX <= slotX + slotSize && mouseY >= slotY && mouseY <= slotY + slotSize;
+            if (isHovered) hoveredSlot = i;
+            
+            int color = isHovered ? 0x80555555 : 0x80222222;
+            context.fill(slotX, slotY, slotX + slotSize, slotY + slotSize, color);
+            
+            // Draw cross
+            context.fill(slotX + slotSize/2 - 1, slotY + slotSize/2 - 5, slotX + slotSize/2 + 1, slotY + slotSize/2 + 5, 0xFFFFFFFF);
+            context.fill(slotX + slotSize/2 - 5, slotY + slotSize/2 - 1, slotX + slotSize/2 + 5, slotY + slotSize/2 + 1, 0xFFFFFFFF);
+            
+            if (assignedEmotes[i] != null) {
+                String name = assignedEmotes[i].replace("emotes/", "").replace(".json", "");
+                int textWidth = this.textRenderer.getWidth(name);
+                context.drawTextWithShadow(this.textRenderer, name, slotX + slotSize/2 - textWidth/2, slotY - 10, 0xFFFFFF);
+            }
+        }
+        
+        // Draw centered player
+        // InventoryScreen.drawEntity(...) requires specific logic, we can draw the player later if needed
+        context.drawCenteredTextWithShadow(this.textRenderer, "1 / 5", centerX, centerY + 60, 0xFFFFFF);
+        
+        super.render(context, mouseX, mouseY, delta);
+    }
+    
+    @Override
+    public boolean shouldPause() {
+        return false;
+    }
+}

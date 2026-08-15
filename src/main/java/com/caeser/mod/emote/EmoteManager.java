@@ -33,6 +33,11 @@ public class EmoteManager {
         }
     }
     
+    public Emote getEmote(String path) {
+        if (!emotes.containsKey(path)) loadEmote(net.minecraft.util.Identifier.of("caeserclient", path));
+        return emotes.get(path);
+    }
+
     public void playEmote(String path) {
         if (!emotes.containsKey(path)) {
             loadEmote(net.minecraft.util.Identifier.of("caeserclient", path));

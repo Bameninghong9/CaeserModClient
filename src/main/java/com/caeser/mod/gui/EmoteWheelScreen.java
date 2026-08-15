@@ -1,55 +1,107 @@
 package com.caeser.mod.gui;
 
 import com.caeser.mod.emote.EmoteManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
+import org.joml.Vector3f;
+import org.joml.Quaternionf;
 
 public class EmoteWheelScreen extends Screen {
+    private int hoveredSlot = -1;
+    public static String[] assignedEmotes = new String[8];
+    private boolean wasMouseDown = false;
+    
+    static {
+        assignedEmotes[0] = "new_sit";
+        assignedEmotes[1] = "tpose";
+        assignedEmotes[2] = "storytime";
+        assignedEmotes[3] = "pray";
+        assignedEmotes[4] = "ballettspin";
+        assignedEmotes[5] = "wave";
+        assignedEmotes[6] = "ausrutschen";
+        assignedEmotes[7] = "chilling";
+    }
+
     public EmoteWheelScreen() {
         super(Text.literal("Emotes"));
     }
 
     @Override
-    protected void init() {
-        super.init();
-        int width = 120;
-        int height = 20;
-        int x = this.width / 2 - width / 2;
-        int y = this.height / 2 - 40;
-
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("?? Wave"), button -> {
-            EmoteManager.INSTANCE.playEmote("emotes/wave.json");
-            this.client.setScreen(null);
-        }).dimensions(x, y, width, height).build());
-
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("?? Sit (NRC)"), button -> {
-            EmoteManager.INSTANCE.playEmote("emotes/new_sit.json");
-            this.client.setScreen(null);
-        }).dimensions(x, y + 25, width, height).build());
-
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("Ballett Spin"), button -> {
-            EmoteManager.INSTANCE.playEmote("emotes/ballettspin.json");
-            this.client.setScreen(null);
-        }).dimensions(x, y + 50, width, height).build());
+    public void tick() {
+        super.tick();
+        long handle = MinecraftClient.getInstance().getWindow().getHandle();
         
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("Storytime"), button -> {
-            EmoteManager.INSTANCE.playEmote("emotes/storytime.json");
+        // Check B key release
+        if (GLFW.glfwGetKey(handle, GLFW.GLFW_KEY_B) != GLFW.GLFW_PRESS) {
             this.client.setScreen(null);
-        }).dimensions(x, y + 75, width, height).build());
+            if (hoveredSlot != -1 && assignedEmotes[hoveredSlot] != null) {
+                EmoteManager.INSTANCE.playEmote("emotes/" + assignedEmotes[hoveredSlot] + ".json");
+            }
+            return;
+        }
         
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("Pray"), button -> {
-            EmoteManager.INSTANCE.playEmote("emotes/pray.json");
-            this.client.setScreen(null);
-        }).dimensions(x, y + 100, width, height).build());
+        // Check mouse click
+        boolean isMouseDown = GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
+        if (isMouseDown && !wasMouseDown && hoveredSlot != -1) {
+            this.client.setScreen(new EmoteSelectionScreen(this, hoveredSlot));
+        }
+        wasMouseDown = isMouseDown;
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.fill(0, 0, this.width, this.height, 0x80000000);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, this.height / 2 - 70, 0xFFFFFF);
+        context.fill(0, 0, this.width, this.height, 0x50000000); // 0x80000000 in NoRisk but slightly lighter
+        
+        int centerX = this.width / 2;
+        int centerY = this.height / 2;
+        int radius = 100;
+        int slotSize = 64;
+        
+        hoveredSlot = -1;
+        
+        for (int i = 0; i < 8; i++) {
+            // angle goes clockwise from top
+            double angle = i * (Math.PI / 4) - (Math.PI / 2);
+            int slotX = centerX + (int)(Math.cos(angle) * radius) - slotSize / 2;
+            int slotY = centerY + (int)(Math.sin(angle) * radius) - slotSize / 2;
+            
+            boolean isHovered = mouseX >= slotX && mouseX <= slotX + slotSize && mouseY >= slotY && mouseY <= slotY + slotSize;
+            if (isHovered) hoveredSlot = i;
+            
+            int color = isHovered ? 0x90666666 : 0x80222222;
+            context.fill(slotX, slotY, slotX + slotSize, slotY + slotSize, color);
+            
+            // Draw cross or name
+            if (assignedEmotes[i] == null) {
+                context.fill(slotX + slotSize/2 - 1, slotY + slotSize/2 - 5, slotX + slotSize/2 + 1, slotY + slotSize/2 + 5, 0xFFFFFFFF);
+                context.fill(slotX + slotSize/2 - 5, slotY + slotSize/2 - 1, slotX + slotSize/2 + 5, slotY + slotSize/2 + 1, 0xFFFFFFFF);
+            } else {
+                String name = assignedEmotes[i];
+                int textWidth = this.textRenderer.getWidth(name);
+                // We could draw the entity here too, but for the wheel just drawing the text is easier
+                context.drawTextWithShadow(this.textRenderer, name, slotX + slotSize/2 - textWidth/2, slotY + slotSize/2 - 4, 0xFFFFFF);
+            }
+        }
+        
+        // Draw player in center!
+        if (this.client.player != null) {
+            float mouseXOffset = centerX - mouseX;
+            float mouseYOffset = centerY - mouseY;
+            // drawEntity(context, x1, y1, x2, y2, size, f, mouseX, mouseY, entity)
+            InventoryScreen.drawEntity(context, centerX - 25, centerY - 50, centerX + 25, centerY + 50, 30, 0.0f, mouseXOffset, mouseYOffset, this.client.player);
+        }
+        
+        context.drawCenteredTextWithShadow(this.textRenderer, "1 / 5", centerX, centerY + 60, 0xFFFFFF);
+        
         super.render(context, mouseX, mouseY, delta);
+    }
+    
+    @Override
+    public boolean shouldPause() {
+        return false;
     }
 }
