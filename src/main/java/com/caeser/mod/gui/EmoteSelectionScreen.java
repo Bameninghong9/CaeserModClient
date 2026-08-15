@@ -92,7 +92,9 @@ public class EmoteSelectionScreen extends Screen {
                 float mouseYOffset = centerY - mouseY - 40;
                 
                 InventoryScreen.drawEntity(context, x, y, x + slotWidth, y + slotHeight, 35, 0.0f, mouseXOffset, mouseYOffset, this.client.player);
-                context.draw(); // Flush immediately so the mixin reads the correct previewEmoteName
+                if (context.getVertexConsumers() instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate) {
+                    ((net.minecraft.client.render.VertexConsumerProvider.Immediate)context.getVertexConsumers()).draw();
+                }
             }
         }
         
