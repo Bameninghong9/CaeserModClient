@@ -1,35 +1,36 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "com.caeser.mod.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "GameMenuScreenMixin",
-    "EntityHitboxDebugRendererMixin",
-    "DebugHudProfileMixin",
-    "OverlayTextureMixin",
-    "LivingEntityRendererMixin",
-    "InGameOverlayRendererMixin",
-    "ClientPlayerInteractionManagerMixin",
-    "MouseMixin",
-    "InGameHudMixin",
-    "InGameHudAccessor",
-    "PlayerListHudMixin",
-    "ChatHudMixin",
-    "BossBarHudMixin",
-    "FogRendererMixin",
-    "LightmapTextureManagerMixin",
-    "GameRendererMixin",
-    "ClientWorldMixin"
-  ],
-  "client": [
-    "GameMenuScreenMixin",
-    "EntityHitboxDebugRendererMixin",
-    "DebugHudProfileMixin",
-    "ChatHudMixin",
-    "BossBarHudMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required":  true,
+    "minVersion":  "0.8",
+    "package":  "com.caeser.mod.mixin",
+    "compatibilityLevel":  "JAVA_21",
+    "mixins":  [
+                   "GameMenuScreenMixin",
+                   "EntityHitboxDebugRendererMixin",
+                   "DebugHudProfileMixin",
+                   "OverlayTextureMixin",
+                   "LivingEntityRendererMixin",
+                   "InGameOverlayRendererMixin",
+                   "ClientPlayerInteractionManagerMixin",
+                   "MouseMixin",
+                   "InGameHudMixin",
+                   "InGameHudAccessor",
+                   "PlayerListHudMixin",
+                   "ChatHudMixin",
+                   "BossBarHudMixin",
+                   "FogRendererMixin",
+                   "LightmapTextureManagerMixin",
+                   "GameRendererMixin",
+                   "ClientWorldMixin"
+               ],
+    "client":  [
+                   "GameMenuScreenMixin",
+                   "EntityHitboxDebugRendererMixin",
+                   "DebugHudProfileMixin",
+                   "ChatHudMixin",
+                   "BossBarHudMixin",
+                   "PlayerEntityModelMixin"
+               ],
+    "injectors":  {
+                      "defaultRequire":  1
+                  }
 }
