@@ -28,7 +28,8 @@
                    "DebugHudProfileMixin",
                    "ChatHudMixin",
                    "BossBarHudMixin",
-                   "PlayerEntityModelMixin"
+                   "PlayerEntityModelMixin",
+                   "CameraMixin"
                ],
     "injectors":  {
                       "defaultRequire":  1
