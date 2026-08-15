@@ -19,7 +19,7 @@ public abstract class PlayerEntityModelMixin extends BipedEntityModel<PlayerEnti
 
     @Inject(method = "setAngles(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;)V", at = @At("TAIL"))
     public void onSetAngles(PlayerEntityRenderState state, CallbackInfo ci) {
-        if (MinecraftClient.getInstance().player != null && state.id == MinecraftClient.getInstance().player.getId() && EmoteManager.INSTANCE.isPlaying()) {
+        if (MinecraftClient.getInstance().player != null && state.id == MinecraftClient.getInstance().player.getId() && (EmoteManager.INSTANCE.isPlaying() || com.caeser.mod.emote.PreviewHelper.previewEmoteName != null)) {
             float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickProgress(true);
 
             applyBone(this.head, "head", tickDelta);

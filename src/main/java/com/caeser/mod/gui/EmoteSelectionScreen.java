@@ -12,7 +12,7 @@ public class EmoteSelectionScreen extends Screen {
     private final int targetSlot;
     
     private final String[] availableEmotes = {
-        "new_sit", "tpose", "storytime", "pray", "ballettspin", "wave", "ausrutschen", "chilling", "holding_head", "dripstone", "staffelei", "banhammer"
+        "new_sit", "tpose", "storytime", "pray", "ballettspin", "wave", "ausrutschen", "chilling", "holding_head", "highcortisol", "i_came_to_loop", "spin"
     };
 
     public EmoteSelectionScreen(EmoteWheelScreen parent, int targetSlot) {
@@ -60,7 +60,7 @@ public class EmoteSelectionScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         context.fill(0, 0, this.width, this.height, 0xD0000000);
-        context.drawTextWithShadow(this.textRenderer, "CLASSIC", 20, 20, 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer, "CLASSIC", 20, 20, 0xFFFFFFFF);
         
         int startX = 20;
         int startY = 40;
@@ -76,7 +76,7 @@ public class EmoteSelectionScreen extends Screen {
             
             boolean hovered = mouseX >= x && mouseX <= x + slotWidth && mouseY >= y && mouseY <= y + slotHeight;
             context.fill(x, y, x + slotWidth, y + slotHeight, hovered ? 0x80555555 : 0x80222222);
-            context.drawTextWithShadow(this.textRenderer, availableEmotes[i], x + 5, y - 10, 0xFFFFFF);
+            context.drawTextWithShadow(this.textRenderer, availableEmotes[i], x + 5, y - 10, 0xFFFFFFFF);
             
             // Draw player preview
             if (this.client.player != null) {

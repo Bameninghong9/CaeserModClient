@@ -16,14 +16,7 @@ public class EmoteWheelScreen extends Screen {
     private boolean wasMouseDown = false;
     
     static {
-        assignedEmotes[0] = "new_sit";
-        assignedEmotes[1] = "tpose";
-        assignedEmotes[2] = "storytime";
-        assignedEmotes[3] = "pray";
-        assignedEmotes[4] = "ballettspin";
-        assignedEmotes[5] = "wave";
-        assignedEmotes[6] = "ausrutschen";
-        assignedEmotes[7] = "chilling";
+        // Start empty so user sees plus signs
     }
 
     public EmoteWheelScreen() {
@@ -83,7 +76,7 @@ public class EmoteWheelScreen extends Screen {
                 String name = assignedEmotes[i];
                 int textWidth = this.textRenderer.getWidth(name);
                 // We could draw the entity here too, but for the wheel just drawing the text is easier
-                context.drawTextWithShadow(this.textRenderer, name, slotX + slotSize/2 - textWidth/2, slotY + slotSize/2 - 4, 0xFFFFFF);
+                context.drawTextWithShadow(this.textRenderer, name, slotX + slotSize/2 - textWidth/2, slotY + slotSize/2 - 4, 0xFFFFFFFF);
             }
         }
         
