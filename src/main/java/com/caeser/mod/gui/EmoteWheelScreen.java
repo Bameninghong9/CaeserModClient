@@ -26,6 +26,7 @@ public class EmoteWheelScreen extends Screen {
     @Override
     public void tick() {
         super.tick();
+        com.caeser.mod.emote.PreviewHelper.previewTime += 0.05f;
         long handle = MinecraftClient.getInstance().getWindow().getHandle();
         
         // Check B key release
@@ -39,10 +40,14 @@ public class EmoteWheelScreen extends Screen {
         
         // Check mouse click
         boolean isMouseDown = GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
+        boolean isRightMouseDown = GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+        
         if (isMouseDown && !wasMouseDown && hoveredSlot != -1) {
             this.client.setScreen(new EmoteSelectionScreen(this, hoveredSlot));
+        } else if (isRightMouseDown && hoveredSlot != -1) {
+            assignedEmotes[hoveredSlot] = null;
         }
-        wasMouseDown = isMouseDown;
+        wasMouseDown = isMouseDown || isRightMouseDown;
     }
 
     @Override
@@ -75,10 +80,18 @@ public class EmoteWheelScreen extends Screen {
             } else {
                 String name = assignedEmotes[i];
                 int textWidth = this.textRenderer.getWidth(name);
-                // We could draw the entity here too, but for the wheel just drawing the text is easier
-                context.drawTextWithShadow(this.textRenderer, name, slotX + slotSize/2 - textWidth/2, slotY + slotSize/2 - 4, 0xFFFFFFFF);
+                context.drawTextWithShadow(this.textRenderer, name, slotX + slotSize/2 - textWidth/2, slotY - 12, 0xFFFFFFFF);
+                
+                if (this.client.player != null) {
+                    com.caeser.mod.emote.PreviewHelper.previewEmoteName = name;
+                    float mX = (slotX + slotSize/2) - mouseX;
+                    float mY = (slotY + slotSize/2) - mouseY - 20;
+                    InventoryScreen.drawEntity(context, slotX, slotY, slotX + slotSize, slotY + slotSize, 25, 0.0f, mX, mY, this.client.player);
+                    context.draw(); // Flush to apply the preview
+                }
             }
         }
+        com.caeser.mod.emote.PreviewHelper.previewEmoteName = null;
         
         // Draw player in center!
         if (this.client.player != null) {

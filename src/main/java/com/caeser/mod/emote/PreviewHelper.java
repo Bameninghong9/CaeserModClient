@@ -8,10 +8,22 @@ public class PreviewHelper {
     
     public static float[] getPreviewRotation(String boneName) {
         if (previewEmoteName == null) return null;
+        
         Emote emote = EmoteManager.INSTANCE.getEmote("emotes/" + previewEmoteName + ".json");
-        if (emote == null) return null;
+        if (emote == null) {
+            System.out.println("[PreviewHelper] Emote is null for: " + previewEmoteName);
+            return null;
+        }
+        
         BoneAnimation anim = emote.bones.get(boneName);
-        if (anim == null || anim.rotationKeyframes.isEmpty()) return null;
+        if (anim == null) {
+            // System.out.println("[PreviewHelper] Bone anim is null for bone: " + boneName + " in emote: " + previewEmoteName);
+            return null;
+        }
+        if (anim.rotationKeyframes.isEmpty()) {
+            System.out.println("[PreviewHelper] Rotation keyframes empty for bone: " + boneName + " in emote: " + previewEmoteName);
+            return null;
+        }
         
         float time = previewTime;
         if (emote.loop) time = time % emote.length;
