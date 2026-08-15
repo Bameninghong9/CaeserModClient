@@ -11,9 +11,9 @@ public class EmoteSelectionScreen extends Screen {
     private final EmoteWheelScreen parent;
     private final int targetSlot;
     
-    private final String[] availableEmotes = {
-        "new_sit", "tpose", "storytime", "pray", "ballettspin", "wave", "ausrutschen", "chilling", "holding_head", "highcortisol", "i_came_to_loop", "spin"
-    };
+    public java.util.List<String> getAvailableEmotes() {
+        return com.caeser.mod.emote.UnlockedEmotes.unlocked;
+    }
 
     public EmoteSelectionScreen(EmoteWheelScreen parent, int targetSlot) {
         super(Text.literal("Select Emote"));
@@ -29,9 +29,9 @@ public class EmoteSelectionScreen extends Screen {
         PreviewHelper.previewTime += 0.05f;
         
         long handle = MinecraftClient.getInstance().getWindow().getHandle();
-        boolean isMouseDown = org.lwjgl.glfw.GLFW.glfwGetMouseButton(handle, org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT) == org.lwjgl.glfw.GLFW.GLFW_PRESS;
+        boolean mouseDown = org.lwjgl.glfw.GLFW.glfwGetMouseButton(handle, org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT) == org.lwjgl.glfw.GLFW.GLFW_PRESS;
         
-        if (isMouseDown && !wasMouseDown) {
+        if (mouseDown && !wasMouseDown) {
             double mouseX = this.client.mouse.getX() * this.client.getWindow().getScaledWidth() / (double) this.client.getWindow().getWidth();
             double mouseY = this.client.mouse.getY() * this.client.getWindow().getScaledHeight() / (double) this.client.getWindow().getHeight();
             
@@ -40,21 +40,23 @@ public class EmoteSelectionScreen extends Screen {
             int slotWidth = 80;
             int slotHeight = 100;
             int cols = 5;
+            int padding = 10;
             
-            for (int i = 0; i < availableEmotes.length; i++) {
+            java.util.List<String> emotes = getAvailableEmotes();
+            for (int i = 0; i < emotes.size(); i++) {
                 int col = i % cols;
                 int row = i / cols;
-                int x = startX + col * (slotWidth + 10);
-                int y = startY + row * (slotHeight + 10);
+                int x = startX + col * (slotWidth + padding);
+                int y = startY + row * (slotHeight + padding);
                 
                 if (mouseX >= x && mouseX <= x + slotWidth && mouseY >= y && mouseY <= y + slotHeight) {
-                    EmoteWheelScreen.assignedEmotes[targetSlot] = availableEmotes[i];
-                    this.client.setScreen(null); // Just close for now
+                    EmoteWheelScreen.assignedEmotes[targetSlot] = emotes.get(i);
+                    this.client.setScreen(parent);
                     return;
                 }
             }
         }
-        wasMouseDown = isMouseDown;
+        wasMouseDown = mouseDown;
     }
 
     @Override
@@ -67,21 +69,23 @@ public class EmoteSelectionScreen extends Screen {
         int slotWidth = 80;
         int slotHeight = 100;
         int cols = 5;
+        int padding = 10;
         
-        for (int i = 0; i < availableEmotes.length; i++) {
+        java.util.List<String> emotes = getAvailableEmotes();
+        for (int i = 0; i < emotes.size(); i++) {
             int col = i % cols;
             int row = i / cols;
-            int x = startX + col * (slotWidth + 10);
-            int y = startY + row * (slotHeight + 10);
+            int x = startX + col * (slotWidth + padding);
+            int y = startY + row * (slotHeight + padding);
             
             boolean hovered = mouseX >= x && mouseX <= x + slotWidth && mouseY >= y && mouseY <= y + slotHeight;
             context.fill(x, y, x + slotWidth, y + slotHeight, hovered ? 0x80555555 : 0x80222222);
-            context.drawTextWithShadow(this.textRenderer, availableEmotes[i], x + 5, y - 10, 0xFFFFFFFF);
+            context.drawTextWithShadow(this.textRenderer, emotes.get(i), x + 5, y - 10, 0xFFFFFFFF);
             
             // Draw player preview
             if (this.client.player != null) {
                 // Set the override ONLY for this render call
-                PreviewHelper.previewEmoteName = availableEmotes[i];
+                PreviewHelper.previewEmoteName = emotes.get(i);
                 
                 int centerX = x + slotWidth / 2;
                 int centerY = y + slotHeight - 10;
@@ -92,7 +96,7 @@ public class EmoteSelectionScreen extends Screen {
                 float mouseYOffset = centerY - mouseY - 40;
                 
                 InventoryScreen.drawEntity(context, x, y, x + slotWidth, y + slotHeight, 35, 0.0f, mouseXOffset, mouseYOffset, this.client.player);
-                com.caeser.mod.emote.TestContext.flush(context);
+                net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().draw();
             }
         }
         

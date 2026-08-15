@@ -29,6 +29,7 @@ public class CaeserMod implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        com.caeser.mod.emote.UnlockedEmotes.load();
         System.out.println("Initializing Caeser Client...");
         
         // Load configuration

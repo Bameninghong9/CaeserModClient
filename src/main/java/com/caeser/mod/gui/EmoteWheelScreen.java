@@ -87,7 +87,7 @@ public class EmoteWheelScreen extends Screen {
                     float mX = (slotX + slotSize/2) - mouseX;
                     float mY = (slotY + slotSize/2) - mouseY - 20;
                     InventoryScreen.drawEntity(context, slotX, slotY, slotX + slotSize, slotY + slotSize, 25, 0.0f, mX, mY, this.client.player);
-                    com.caeser.mod.emote.TestContext.flush(context);
+                    net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().draw();
                 }
             }
         }
