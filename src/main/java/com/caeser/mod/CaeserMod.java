@@ -63,10 +63,8 @@ public class CaeserMod implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             com.caeser.mod.emote.EmoteManager.INSTANCE.tick();
             while (emoteKeyBinding.wasPressed()) {
-                if (com.caeser.mod.emote.EmoteManager.INSTANCE.isPlaying()) {
-                    com.caeser.mod.emote.EmoteManager.INSTANCE.stopEmote();
-                } else {
-                    //
+                if (client.currentScreen == null) {
+                    client.setScreen(new com.caeser.mod.gui.EmoteWheelScreen());
                 }
             }
             while (settingsKeyBinding.wasPressed()) {
